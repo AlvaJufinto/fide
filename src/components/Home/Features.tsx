@@ -1,7 +1,5 @@
 /** @format */
 
-import React from "react";
-
 import Earth from "@/assets/icon/earth.png";
 import Gospel from "@/assets/icon/gospel.png";
 import Hat from "@/assets/icon/hat.png";
@@ -62,10 +60,10 @@ function Features() {
 					{features.map((features) => (
 						<div
 							className="group relative border-5 border-black min-h-48 pt-8 pl-10 pr-10 pb-2
-								shadow-[4px_4px_0px_black]
+								shadow-[4px_4px_0px_var(--color-gray)]
 								transition-none
 								hover:-translate-x-1 hover:-translate-y-1
-								hover:shadow-[6px_6px_0px_black]"
+								hover:shadow-[6px_6px_0px_var(--color-gray)]"
 						>
 							<img
 								src={features.image}

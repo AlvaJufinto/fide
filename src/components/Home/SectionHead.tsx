@@ -1,7 +1,5 @@
 /** @format */
 
-import React from "react";
-
 interface ISectionHead {
 	title: string;
 	description: string;
