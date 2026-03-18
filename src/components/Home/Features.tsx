@@ -10,7 +10,7 @@ import Saint from "@/assets/icon/saint.png";
 import SectionHead from "./SectionHead";
 
 function Features() {
-	const features = [
+	const FEATURES = [
 		{
 			image: Maria,
 			title: "Make Learning More Easier.",
@@ -57,13 +57,14 @@ function Features() {
 					description="Everything is designed so you can learn the Catholic faith in a joyful and engaging way without feeling bored."
 				/>
 				<div className="mt-16 grid grid-cols-3 gap-12 gap-y-20">
-					{features.map((features) => (
+					{FEATURES.map((features, i) => (
 						<div
 							className="group relative border-5 border-black min-h-48 pt-8 pl-10 pr-10 pb-2
 								shadow-[4px_4px_0px_var(--color-gray)]
 								transition-none
 								hover:-translate-x-1 hover:-translate-y-1
 								hover:shadow-[6px_6px_0px_var(--color-gray)]"
+							key={i}
 						>
 							<img
 								src={features.image}

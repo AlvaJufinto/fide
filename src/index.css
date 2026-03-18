@@ -14,6 +14,7 @@
 
 * {
 	font-family: "Pixelify Sans", sans-serif;
+	image-rendering: pixelated;
 }
 
 .font-primary {
@@ -64,6 +65,12 @@
 
 .animate-float-pixel {
 	animation: floatPixel 1s steps(2, end) infinite;
+}
+
+.image-pixel {
+	image-rendering: pixelated;
+	transform: scale(1.05);
+	filter: contrast(1.6) saturate(0.6);
 }
 
 /* TEXT */
