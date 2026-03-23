@@ -1,5 +1,8 @@
 /** @format */
 @import "tailwindcss";
+@import "./styles/markdown.css";
+@import "./styles/typography.css";
+@import "./styles/layout.css";
 
 :root {
 	--color-white: #ffffff;
@@ -23,54 +26,8 @@
 	font-style: normal;
 }
 
-.outer-container {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
-.inner-container {
-	width: 100%;
-	max-width: 932px; /* max-w-7xl = 1280px = 80rem */
-	margin-left: auto;
-	margin-right: auto;
-	padding-left: 0;
-	padding-right: 0;
-}
-
-.outer-game-container {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
-.inner-game-container {
-	width: 100%;
-	max-width: 1148px;
-	margin-left: auto;
-	margin-right: auto;
-	padding-left: 0;
-	padding-right: 0;
-}
-
 .shadow-custom {
 	box-shadow: 6px 6px 0px var(--color-gray);
-}
-
-/* sm (≥640px) */
-@media (min-width: 640px) {
-	.inner-container,
-	.inner-game-container {
-		padding-left: 1.5rem; /* px-6 */
-		padding-right: 1.5rem;
-	}
-}
-
-/* lg (≥1024px) */
-@media (min-width: 1024px) {
-	.inner-container,
-	.inner-game-container {
-		padding-left: 2rem; /* px-8 */
-		padding-right: 2rem;
-	}
 }
 
 @keyframes floatPixel {
@@ -91,82 +48,4 @@
 	image-rendering: pixelated;
 	transform: scale(1.05);
 	filter: contrast(1.6) saturate(0.6);
-}
-
-/* TEXT */
-.text-white {
-	color: var(--color-white);
-}
-.text-black {
-	color: var(--color-black);
-}
-.text-gray {
-	color: var(--color-gray);
-}
-.text-yellow {
-	color: var(--color-yellow);
-}
-.text-primary {
-	color: var(--color-primary);
-}
-.text-overlay {
-	color: var(--color-overlay);
-}
-.text-success {
-	color: var(--color-success);
-}
-.text-error {
-	color: var(--color-error);
-}
-
-/* BACKGROUND */
-.bg-white {
-	background-color: var(--color-white);
-}
-.bg-black {
-	background-color: var(--color-black);
-}
-.bg-gray {
-	background-color: var(--color-gray);
-}
-.bg-yellow {
-	background-color: var(--color-yellow);
-}
-.bg-primary {
-	background-color: var(--color-primary);
-}
-.bg-overlay {
-	background-color: var(--color-overlay);
-}
-.bg-success {
-	background-color: var(--color-success);
-}
-.bg-error {
-	background-color: var(--color-error);
-}
-
-/* BORDER (bonus, biasanya kepake juga) */
-.border-white {
-	border-color: var(--color-white);
-}
-.border-black {
-	border-color: var(--color-black);
-}
-.border-gray {
-	border-color: var(--color-gray);
-}
-.border-yellow {
-	border-color: var(--color-yellow);
-}
-.border-primary {
-	border-color: var(--color-primary);
-}
-.border-overlay {
-	border-color: var(--color-overlay);
-}
-.border-success {
-	border-color: var(--color-success);
-}
-.border-error {
-	border-color: var(--color-error);
 }

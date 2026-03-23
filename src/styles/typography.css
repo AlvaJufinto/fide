@@ -1,0 +1,82 @@
+/**
+ * TEXT
+ *
+ * @format
+ */
+
+.text-white {
+	color: var(--color-white);
+}
+.text-black {
+	color: var(--color-black);
+}
+.text-gray {
+	color: var(--color-gray);
+}
+.text-yellow {
+	color: var(--color-yellow);
+}
+.text-primary {
+	color: var(--color-primary);
+}
+.text-overlay {
+	color: var(--color-overlay);
+}
+.text-success {
+	color: var(--color-success);
+}
+.text-error {
+	color: var(--color-error);
+}
+
+/* BACKGROUND */
+.bg-white {
+	background-color: var(--color-white);
+}
+.bg-black {
+	background-color: var(--color-black);
+}
+.bg-gray {
+	background-color: var(--color-gray);
+}
+.bg-yellow {
+	background-color: var(--color-yellow);
+}
+.bg-primary {
+	background-color: var(--color-primary);
+}
+.bg-overlay {
+	background-color: var(--color-overlay);
+}
+.bg-success {
+	background-color: var(--color-success);
+}
+.bg-error {
+	background-color: var(--color-error);
+}
+
+/* BORDER (bonus, biasanya kepake juga) */
+.border-white {
+	border-color: var(--color-white);
+}
+.border-black {
+	border-color: var(--color-black);
+}
+.border-gray {
+	border-color: var(--color-gray);
+}
+.border-yellow {
+	border-color: var(--color-yellow);
+}
+.border-primary {
+	border-color: var(--color-primary);
+}
+.border-overlay {
+	border-color: var(--color-overlay);
+}
+.border-success {
+	border-color: var(--color-success);
+}
+.border-error {
+	border-color: var(--color-error);
+}

@@ -16,7 +16,13 @@ type ButtonProps = {
 } & ButtonHTMLAttributes<HTMLButtonElement> &
 	Partial<LinkProps>;
 
-function Button({ children, customClass = "", to, ...props }: ButtonProps) {
+function Button({
+	children,
+	customClass = "",
+	to,
+	disabled,
+	...props
+}: ButtonProps) {
 	const audioRef = useRef<HTMLAudioElement | null>(null);
 
 	useEffect(() => {
@@ -29,6 +35,7 @@ function Button({ children, customClass = "", to, ...props }: ButtonProps) {
 	}, []);
 
 	const playClick = () => {
+		if (disabled) return; // jangan play kalau disabled
 		const audio = audioRef.current;
 		if (!audio) return;
 
@@ -36,12 +43,17 @@ function Button({ children, customClass = "", to, ...props }: ButtonProps) {
 		audio.play();
 	};
 
-	const className = `border-3 border-black bg-primary text-white cursor-crosshair
+	const baseClass = `border-3 border-black bg-primary text-white cursor-crosshair
 	shadow-[4px_4px_0px_black]
 	active:translate-y-1 active:shadow-none
 	transition-all duration-100 ${customClass}`;
 
-	// 🔥 kalau ada `to` → pakai React Router Link
+	const disabledClass = disabled
+		? "opacity-50 cursor-not-allowed pointer-events-none active:translate-y-0 active:shadow-[4px_4px_0px_black] "
+		: "";
+
+	const className = `${baseClass} ${disabledClass}`;
+
 	if (to) {
 		return (
 			<Link
@@ -58,6 +70,7 @@ function Button({ children, customClass = "", to, ...props }: ButtonProps) {
 
 	return (
 		<button
+			disabled={disabled}
 			onMouseDown={playClick}
 			className={className}
 			{...(props as ButtonHTMLAttributes<HTMLButtonElement>)}
