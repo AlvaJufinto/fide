@@ -41,7 +41,9 @@ export default function Home() {
 							Start an exciting journey with Fide! Learn, play, and become a
 							friend of Jesus every day.
 						</p>
-						<Button customClass="py-4 px-10">Start Your Journey!</Button>
+						<Button customClass="py-4 px-10" to="/dashboard">
+							Start Your Journey!
+						</Button>
 					</div>
 				</div>
 			</div>

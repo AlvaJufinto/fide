@@ -16,7 +16,9 @@ function Welcome() {
 					Learning the Catholic faith becomes fun, easy, and full of adventure.
 					Start your journey with new friends!
 				</p>
-				<Button customClass="mt-8 py-4 px-10">Start Your Journey</Button>
+				<Button customClass="mt-8 py-4 px-10" to="/dashboard">
+					Start Your Journey
+				</Button>
 				<div className="my-14 flex gap-21">
 					<div className="flex flex-col items-center">
 						<h2 className="text-primary text-4xl font-bold">400+</h2>
