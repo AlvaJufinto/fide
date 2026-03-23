@@ -1,0 +1,87 @@
+chapter: [
+
+level: 'I'
+title: GOD
+slug: 'god'
+description: 'This chapter explores the human longing for God and how people can come to know Him through reason, conscience, and reflection. It then guides the learner to understand who God is in Catholic teaching—His attributes, His love, and the mystery of the Holy Trinity at the center of Christian faith.'
+img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsRIeXT-rY4KLHFB8UKy7c00g-Wo97qsSOsSevQsbsyGSlGLfd1NH2wiZ1MvMtdpwAT5jHeYGUEP40HMsZ8WxdPDWHlL26&s&ec=121584914'
+
+sections: [
+ level: 'I'
+ title: 'The Human Desire for God'	
+ isFinalBoss: false, 
+lesson: [
+   level: 'I'
+   title: 'Introduction',
+   content: [
+     {
+	chapterName: '..'
+     sectionLevel: '..'     
+     sectionName: '..'
+     lessonLevel: '..'
+     lessonTitle: '..', 
+     isMaterial: true,
+     isQuestion: false,
+     content: '<p>... dangerously inner html ...</p'
+     },
+{
+	chapterName: '..'
+     sectionLevel: '..'     
+     sectionName: '..'
+     lessonLevel: '..'
+     lessonTitle: '..', 
+     isMaterial: false,
+     isQuestion: true,
+     question: '...'
+     choices: [option: "a", content:"...", ...]
+     correctAnswer: 'a' // (option)
+explanationCorrectAnswer: '...'
+explanationWrongAnswer: '..'
+
+     }
+
+   ]
+	
+ ....
+ level: 'V'
+ isFinalBoss: true,
+ question: '...'
+]
+
+
+chapter 1 — Pengenalan akan Allah
+Stage 1: Kerinduan manusia akan Allah
+Stage 2: Cara manusia mengenal Allah (akal budi & hati nurani)
+Stage 3: Bukti rasional keberadaan Allah
+Stage 4: Wahyu umum dan wahyu khusus
+Stage 5: Sifat Allah (Kesatuan & Kesederhanaan)
+Stage 6: Allah Mahakuasa, Mahatahu, Mahabaik
+Stage 7: Allah adalah Kasih
+Stage 8: Tritunggal Mahakudus (Bapa, Putra, Roh Kudus)
+Stage 9: Kesatuan dalam Tiga Pribadi
+Final Stage (Boss): Debat dengan AI — Mengapa Tritunggal bukan politeisme?
+
+chapter 2 — Penciptaan & Martabat Manusia
+Stage 1: Creatio ex nihilo
+Stage 2: Tujuan penciptaan
+Stage 3: Providentia (Penyelenggaraan Ilahi)
+Stage 4: Manusia sebagai Imago Dei
+Stage 5: Jiwa dan tubuh
+Stage 6: Kebebasan dan kehendak bebas
+Stage 7: Dosa asal
+Stage 8: Konsekuensi dosa
+Stage 9: Janji keselamatan dan harapan akan Penebus
+Final Stage (Boss): Case study — Free will vs determinism.
+
+
+chapter 3 — Kristus & Penebusan
+Stage 1: Mengapa Allah menjadi manusia
+Stage 2: Inkarnasi
+Stage 3: Dua kodrat Kristus
+Stage 4: Sengsara dan makna kurban
+Stage 5: Penebusan universal
+Stage 6: Kebangkitan
+Stage 7: Kenaikan Tuhan
+Stage 8: Pentakosta
+Stage 9: Gereja sebagai Tubuh Kristus
+Final Stage (Boss): Debat AI — Membela keilahian Kristus.

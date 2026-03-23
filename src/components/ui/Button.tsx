@@ -1,20 +1,28 @@
 /** @format */
 
-import { type ReactNode, useEffect, useRef } from "react";
+import {
+	type ButtonHTMLAttributes,
+	type ReactNode,
+	useEffect,
+	useRef,
+} from "react";
 
-interface IButton {
+import { Link, type LinkProps } from "react-router";
+
+type ButtonProps = {
 	children: ReactNode;
 	customClass?: string;
-}
+	to?: LinkProps["to"];
+} & ButtonHTMLAttributes<HTMLButtonElement> &
+	Partial<LinkProps>;
 
-function Button({ children, customClass = "" }: IButton) {
+function Button({ children, customClass = "", to, ...props }: ButtonProps) {
 	const audioRef = useRef<HTMLAudioElement | null>(null);
 
 	useEffect(() => {
 		const audio = new Audio("/sound-effect/click.wav");
 		audio.volume = 0.5;
 		audio.preload = "auto";
-
 		audio.load();
 
 		audioRef.current = audio;
@@ -28,13 +36,31 @@ function Button({ children, customClass = "" }: IButton) {
 		audio.play();
 	};
 
+	const className = `border-3 border-black bg-primary text-white cursor-crosshair
+	shadow-[4px_4px_0px_black]
+	active:translate-y-1 active:shadow-none
+	transition-all duration-100 ${customClass}`;
+
+	// 🔥 kalau ada `to` → pakai React Router Link
+	if (to) {
+		return (
+			<Link
+				// @ts-ignore
+				to={to}
+				onMouseDown={playClick}
+				className={className}
+				{...(props as LinkProps)}
+			>
+				{children}
+			</Link>
+		);
+	}
+
 	return (
 		<button
 			onMouseDown={playClick}
-			className={`border-3 border-black bg-primary text-white cursor-crosshair
-			shadow-[4px_4px_0px_black]
-			active:translate-y-1 active:shadow-none
-			transition-all duration-100 ${customClass}`}
+			className={className}
+			{...(props as ButtonHTMLAttributes<HTMLButtonElement>)}
 		>
 			{children}
 		</button>
