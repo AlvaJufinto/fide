@@ -2,6 +2,7 @@
 
 import { useParams } from "react-router";
 
+import LessonHeader from "@/components/Game/LessonHeader";
 import LessonNavigation from "@/components/Game/LessonNavigation";
 import Question from "@/components/Game/Question";
 import Button from "@/components/ui/Button";
@@ -30,30 +31,6 @@ function Content({ currentContent }: IContentProps) {
 	}
 
 	return null;
-}
-
-interface ILessonHeaderProps {
-	chapter: IChapter;
-	section: ISection;
-	lesson: ILesson;
-}
-
-function LessonHeader({ chapter, section, lesson }: ILessonHeaderProps) {
-	return (
-		<div className="w-full  mt-4 flex flex-col items-center p-6">
-			<h1 className="text-primary uppercase font-bold text-6xl text-center">
-				{chapter.title}
-			</h1>
-			<h3 className="font-bold text-black text-2xl text-center">
-				SECTION {section.level}: {section.title}
-			</h3>
-
-			<div className="mt-5 flex gap-5 items-center">
-				<div className="border-4 py-4 px-8 text-5xl">{lesson.level}</div>
-				<p className="font-bold text-4xl uppercase">{lesson.title}</p>
-			</div>
-		</div>
-	);
 }
 
 export default function Lesson() {

@@ -21,8 +21,7 @@ export default function LessonNavigation({
 
 	const canNext =
 		current + 1 < lessonLength &&
-		(currentContentType === "question" ? isCurrentCorrect : true) &&
-		isChecked;
+		(currentContentType === "question" ? isCurrentCorrect && isChecked : true);
 
 	return (
 		<div className="bg-white fixed bottom-0 w-full border-4 border-black">
