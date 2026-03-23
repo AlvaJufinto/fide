@@ -51,11 +51,16 @@ function Chapter() {
 								{section.isFinalBoss ? (
 									<div className="w-full flex gap-5">
 										<img src={Martin} alt="Final Boss" className="w-25" />
-										<div className="flex-1 flex flex-col gap-2">
+										<div className="flex-1 flex flex-col gap-2 items-start">
 											<h1 className="uppercase font-bold text-4xl text-primary">
 												Final Boss
 											</h1>
-											<Button customClass="py-2 px-8 text-2xl">FIGHT</Button>
+											<Button
+												to={`/chapter/${chapter?.slug}/boss-fight`}
+												customClass="py-2 px-8 text-2xl"
+											>
+												FIGHT
+											</Button>
 										</div>
 									</div>
 								) : (
@@ -87,7 +92,7 @@ function Chapter() {
 												className="group flex flex-1 items-center"
 											>
 												<div className="group-hover:bg-gray-200 p-4 flex items-center gap-5 ">
-													<div className="bg-white border-2 text-3xl py-1 px-4">
+													<div className="bg-white border-4 text-3xl py-1 px-4">
 														{lesson.level}
 													</div>
 

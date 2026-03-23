@@ -6,6 +6,7 @@ import Home from "@/pages/Home";
 
 import Chapter from "./pages/Game/Chapter";
 import Dashboard from "./pages/Game/Dashboard";
+import Lesson from "./pages/Game/Lesson";
 
 function App() {
 	return (
@@ -13,6 +14,10 @@ function App() {
 			<Route path="/" element={<Home />} />
 			<Route path="/dashboard" element={<Dashboard />} />
 			<Route path="/chapter/:chapterSlug" element={<Chapter />} />
+			<Route
+				path="/chapter/:chapterSlug/:sectionSlug/:lessonSlug"
+				element={<Lesson />}
+			/>
 		</Routes>
 	);
 }
