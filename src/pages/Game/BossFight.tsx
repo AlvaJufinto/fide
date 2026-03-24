@@ -1,6 +1,6 @@
 /** @format */
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useParams } from "react-router";
 
@@ -8,12 +8,13 @@ import { api } from "@/api";
 import Brother from "@/assets/game/brother.png";
 import Martin from "@/assets/game/stages/final-boss.png";
 import BgImg from "@/assets/game/stages/level-1.png";
+import ChatLog from "@/components/Debate/ChatLog";
 import LessonHeader from "@/components/Game/LessonHeader";
+import LoadingScreen from "@/components/Game/LoadingScreen";
 import Button from "@/components/ui/Button";
-import { getRandomQuote } from "@/components/ui/PageLoading";
 import useDebateGame from "@/hooks/useDebateGame";
 import type { IChapter, ISection } from "@/interfaces/data";
-import type { ChatMessage, Speaker } from "@/interfaces/debate";
+import type { Speaker } from "@/interfaces/debate";
 
 function CharacterArea({
 	currentSpeaker,
@@ -74,107 +75,6 @@ function CharacterArea({
 						: "Martin Luther"}
 				</span>
 			</div>
-		</div>
-	);
-}
-
-function ChatLog({ messages }: { messages: ChatMessage[] }) {
-	const bottomRef = useRef<HTMLDivElement>(null);
-
-	// Auto-scroll to latest message
-	useEffect(() => {
-		bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-	}, [messages]);
-
-	return (
-		// FIX 4: fixed-height scrollable chat area, no overflow outside container
-		<div className="flex flex-col gap-3 overflow-y-auto h-full px-4 py-3">
-			{messages.map((msg, i) => {
-				if (msg.from === "boss") {
-					return (
-						<div key={i} className="flex items-start gap-2 max-w-[80%]">
-							<div className="border-2 border-red-500 bg-red-100 px-3 py-2 lg text-sm">
-								<span className="font-bold text-red-700 block text-xs mb-1">
-									Martin Luther
-								</span>
-								{msg.text}
-							</div>
-						</div>
-					);
-				}
-				if (msg.from === "player") {
-					return (
-						<div
-							key={i}
-							className="flex items-start gap-2 max-w-[80%] ml-auto flex-row-reverse"
-						>
-							<div className="border-2 border-blue-500 bg-blue-100 px-3 py-2 lg text-sm">
-								<span className="font-bold text-blue-700 block text-xs mb-1 text-right">
-									You
-								</span>
-								{msg.text}
-							</div>
-						</div>
-					);
-				}
-				// feedback
-				return (
-					<div
-						key={i}
-						className="mx-auto border-2 border-yellow-500 bg-yellow-100 px-3 py-2 lg text-sm text-center max-w-[90%]"
-					>
-						<span className="font-bold text-yellow-700 block text-xs mb-1">
-							Judge's Feedback
-						</span>
-						{msg.text}
-					</div>
-				);
-			})}
-			<div ref={bottomRef} />
-		</div>
-	);
-}
-
-function LoadingScreen({
-	message = "Loading Boss Fight...",
-}: {
-	message?: string;
-}) {
-	const [progress, setProgress] = useState(0);
-
-	const [quote, setQuote] = useState(getRandomQuote());
-
-	useEffect(() => {
-		setQuote(getRandomQuote());
-	}, []);
-
-	useEffect(() => {
-		const interval = setInterval(() => {
-			setProgress((prev) => {
-				if (prev >= 100) {
-					clearInterval(interval);
-					return 100;
-				}
-				return prev + Math.floor(Math.random() * 5 + 1);
-			});
-		}, 100);
-		return () => clearInterval(interval);
-	}, []);
-
-	return (
-		<div className="fixed inset-0 flex flex-col justify-center items-center bg-white text-primary z-50">
-			<p className="text-4xl font-bold uppercase">{message}</p>
-			<div className="p-4 my-4 bg-gray-100 max-w-xl md:text-sm">
-				<p className="italic mb-2 text-xl">{quote.text}</p>
-				<p className="font-bold text-right mt-1 text-2xl">— {quote.author}</p>
-			</div>
-			<div className="w-3/4 h-10 bg-white overflow-hidden border-2 border-black">
-				<div
-					className="h-full bg-primary transition-all duration-100"
-					style={{ width: `${Math.min(progress, 100)}%` }}
-				/>
-			</div>
-			<p className="mt-2 text-2xl">{Math.min(progress, 100)}%</p>
 		</div>
 	);
 }

@@ -7,9 +7,9 @@ import { useParams } from "react-router";
 import { api } from "@/api"; // path ke api
 import LessonHeader from "@/components/Game/LessonHeader";
 import LessonNavigation from "@/components/Game/LessonNavigation";
+import LoadingScreen from "@/components/Game/LoadingScreen";
 import Question from "@/components/Game/Question";
 import Button from "@/components/ui/Button";
-import PageLoading from "@/components/ui/PageLoading";
 import type { IChapter, ILesson, ISection } from "@/interfaces/data";
 import { useLessonStore } from "@/stores/lessonStore";
 
@@ -91,7 +91,7 @@ export default function Lesson() {
 				<Button to={`/chapter/${chapterSlug}`} customClass="py-2 px-8">
 					{"<"} Back
 				</Button>
-				{loading && <PageLoading isLoading={loading} />}
+				{loading && <LoadingScreen message="Loading Lessons..." />}
 				{!notFound && !loading && (
 					<>
 						{!(!chapter || !section || !lesson) && (

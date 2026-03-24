@@ -99,6 +99,20 @@ export default function PageLoading({
 	loadingText = "LOADING...",
 }: PageLoadingProps) {
 	const [quote, setQuote] = useState(getRandomQuote());
+	const [progress, setProgress] = useState(0);
+
+	useEffect(() => {
+		const interval = setInterval(() => {
+			setProgress((prev) => {
+				if (prev >= 100) {
+					clearInterval(interval);
+					return 100;
+				}
+				return prev + Math.floor(Math.random() * 5 + 1);
+			});
+		}, 100);
+		return () => clearInterval(interval);
+	}, []);
 
 	useEffect(() => {
 		if (isLoading) setQuote(getRandomQuote());
@@ -114,7 +128,13 @@ export default function PageLoading({
 					<p className="italic mb-2">{quote.text}</p>
 					<p className="font-bold text-right mt-1">— {quote.author}</p>
 				</div>
-				<div className="mt-4 w-12 h-12 border-4 border-black animate-spin rounded-full"></div>
+				<div className="mt-4 w-full max-w-xs h-6 bg-white border-2 border-black rounded overflow-hidden">
+					<div
+						className="h-full bg-primary transition-all duration-300"
+						style={{ width: `${progress}%` }}
+					></div>
+				</div>
+				<p className="text-sm font-bold mt-2">{progress}%</p>{" "}
 			</div>
 		</div>
 	);
