@@ -1,3 +1,5 @@
+<!-- @format -->
+
 # FIDE Backend API Docs
 
 Base URL local: `http://localhost:3000`
