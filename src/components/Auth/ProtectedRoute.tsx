@@ -11,12 +11,12 @@ export default function ProtectedRoute({
 }) {
 	const { isAuthenticated, loading } = useAuth();
 
-	// tunggu token di-load dari localStorage
+	console.log("AUTH:", { isAuthenticated, loading });
+
 	if (loading) {
 		return <div>Loading...</div>;
 	}
 
-	// kalau belum login lempar ke login
 	if (!isAuthenticated) {
 		return <Navigate to="/login" replace />;
 	}

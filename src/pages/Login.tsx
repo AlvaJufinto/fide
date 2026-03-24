@@ -7,7 +7,6 @@ import { useNavigate } from "react-router";
 import Button from "@/components/ui/Button";
 import { useAuth } from "@/context/useAuth";
 
-/* ================= INPUT COMPONENT ================= */
 function Input({
 	label,
 	type = "text",
@@ -33,7 +32,6 @@ function Input({
 	);
 }
 
-/* ================= TYPING HOOK ================= */
 function useTyping(text: string, speed = 25) {
 	const [displayed, setDisplayed] = useState("");
 
@@ -64,8 +62,8 @@ export default function Login() {
 	const [status, setStatus] = useState("IDLE");
 
 	useEffect(() => {
-		if (isAuthenticated) navigate("/");
-	}, [isAuthenticated]);
+		if (isAuthenticated) navigate("/dashboard");
+	}, [isAuthenticated, navigate]);
 
 	const systemMessage = useTyping(
 		"Welcome, player. Your journey to grow in faith begins here.",
@@ -81,7 +79,8 @@ export default function Login() {
 			setStatus("CONNECTING...");
 			await login(email, password);
 			setStatus("SUCCESS");
-			navigate("/dashboard");
+
+			setInterval(() => window.location.reload(), 200);
 		} catch (err) {
 			console.error(err);
 			setStatus("FAILED");
