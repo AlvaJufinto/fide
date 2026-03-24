@@ -25,8 +25,7 @@ function Input({
 				type={type}
 				value={value}
 				onChange={onChange}
-				className="border-3 border-black px-3 py-2 bg-white focus:outline-none
-				shadow-[3px_3px_0px_black]"
+				className="border-3 border-black px-3 py-2 bg-white focus:outline-none shadow-[3px_3px_0px_black]"
 			/>
 		</div>
 	);
@@ -38,13 +37,11 @@ function useTyping(text: string, speed = 25) {
 	useEffect(() => {
 		let i = 0;
 		setDisplayed("");
-
 		const interval = setInterval(() => {
 			i++;
 			setDisplayed(text.slice(0, i));
 			if (i >= text.length) clearInterval(interval);
 		}, speed);
-
 		return () => clearInterval(interval);
 	}, [text, speed]);
 
@@ -79,7 +76,6 @@ export default function Login() {
 			setStatus("CONNECTING...");
 			await login(email, password);
 			setStatus("SUCCESS");
-
 			setInterval(() => window.location.reload(), 200);
 		} catch (err) {
 			console.error(err);
@@ -102,8 +98,7 @@ export default function Login() {
 			<div className="hidden md:flex flex-col justify-between bg-primary text-white p-8 border-r-5 border-black">
 				<Button
 					onClick={() => navigate("/")}
-					customClass="w-fit border-3 border-black px-4 py-2 bg-white! text-black font-bold
-					shadow-[3px_3px_0px_black]"
+					customClass="w-fit border-3 border-black px-4 py-2 bg-white! text-black font-bold shadow-[3px_3px_0px_black]"
 				>
 					{"<"} EXIT
 				</Button>
@@ -147,6 +142,13 @@ export default function Login() {
 					</div>
 
 					<form onSubmit={handleLogin} className="space-y-4">
+						{/* DISCLAIMER BANNER */}
+						<div className="w-full bg-yellow-300 border-2 border-black p-2 text-sm font-bold text-center mb-4 shadow-[2px_2px_0px_black]">
+							Default credentials already filled: <br />
+							<b>Email:</b> user@gmail.com &nbsp; | &nbsp; <b>Password:</b>{" "}
+							password
+						</div>
+
 						<Input
 							label="EMAIL"
 							type="email"
