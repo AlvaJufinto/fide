@@ -47,7 +47,7 @@ function AboutUs() {
 	};
 
 	return (
-		<div className="mt-36 outer-container">
+		<div className="pt-32 outer-container" id="about-us">
 			<div className="inner-container flex flex-col items-center text-center">
 				<SectionHead
 					title="About Us"

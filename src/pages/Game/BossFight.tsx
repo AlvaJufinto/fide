@@ -179,7 +179,7 @@ function DialogueBox() {
 	return (
 		<div className="mt-5 bg-overlay p-5 space-y-3">
 			<h1 className="text-2xl capitalize">
-				{last.speaker === "boss" ? "Martin" : "You"}
+				{last.speaker === "boss" ? "Martin Luther" : "You"}
 			</h1>
 
 			<div className="bg-black h-1"></div>

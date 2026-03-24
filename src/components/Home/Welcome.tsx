@@ -6,17 +6,17 @@ import Button from "@/components/ui/Button";
 
 function Welcome() {
 	return (
-		<div className="outer-container">
+		<div className="pt-20 outer-container" id="welcome">
 			<div className="inner-container flex flex-col items-center">
 				<img src={Vatican} alt="Vatican" />
-				<h1 className="mt-8 text-5xl font-bold text-primary">
+				<h1 className="mt-8 text-5xl font-bold text-primary text-center">
 					Welcome to Fide!
 				</h1>
 				<p className="mt-2 text-gray text-xl max-w-72 text-center font-bold">
 					Learning the Catholic faith becomes fun, easy, and full of adventure.
 					Start your journey with new friends!
 				</p>
-				<Button customClass="mt-8 py-4 px-10" to="/dashboard">
+				<Button customClass="mt-8 py-4 px-10" to="/#play">
 					Start Your Journey
 				</Button>
 				<div className="my-14 flex gap-21">
@@ -33,11 +33,7 @@ function Welcome() {
 						<p>Chapters</p>
 					</div>
 				</div>
-				<img
-					src={ArrowDown}
-					className="mb-14 animate-float-pixel"
-					alt="arrow-down"
-				/>
+				<img src={ArrowDown} className="animate-float-pixel" alt="arrow-down" />
 			</div>
 		</div>
 	);

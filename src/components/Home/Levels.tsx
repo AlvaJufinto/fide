@@ -43,7 +43,7 @@ function Levels() {
 	];
 
 	return (
-		<div className="mt-30 outer-container">
+		<div className="pt-30 outer-container" id="leveling">
 			<div className="inner-container">
 				<SectionHead
 					title="Exciting Levels in Fide."
