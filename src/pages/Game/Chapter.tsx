@@ -62,7 +62,7 @@ function Chapter() {
 						</div>
 
 						<div className="mt-16 flex flex-col gap-12">
-							{sections.map((section, i) => (
+							{sections.map((section) => (
 								<div key={section.slug}>
 									<div className="w-full border-4 border-black shadow-custom flex flex-col py-4 px-10 bg-white">
 										{section.isFinalBoss ? (
@@ -94,7 +94,7 @@ function Chapter() {
 										<div className="mt-6 flex flex-col relative">
 											<div className="absolute left-5 top-0 bottom-0 border-l-8 border-dashed border-gray"></div>
 
-											{section.lessons?.map((lesson, i) => (
+											{section.lessons?.map((lesson) => (
 												<div
 													key={lesson.slug}
 													className="flex items-center mb-8 relative"

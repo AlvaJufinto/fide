@@ -6,6 +6,7 @@ import { useNavigate } from "react-router";
 
 import Button from "@/components/ui/Button";
 import { useAuth } from "@/context/useAuth";
+import { useTyping } from "@/helper";
 
 function Input({
 	label,
@@ -29,23 +30,6 @@ function Input({
 			/>
 		</div>
 	);
-}
-
-function useTyping(text: string, speed = 25) {
-	const [displayed, setDisplayed] = useState("");
-
-	useEffect(() => {
-		let i = 0;
-		setDisplayed("");
-		const interval = setInterval(() => {
-			i++;
-			setDisplayed(text.slice(0, i));
-			if (i >= text.length) clearInterval(interval);
-		}, speed);
-		return () => clearInterval(interval);
-	}, [text, speed]);
-
-	return displayed;
 }
 
 /* ================= LOGIN ================= */

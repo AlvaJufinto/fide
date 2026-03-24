@@ -5,7 +5,7 @@ import type { IChapter, ILesson, ISection } from "@/interfaces/data";
 interface ILessonHeaderProps {
 	chapter: IChapter;
 	section: ISection;
-	lesson: ILesson;
+	lesson?: ILesson;
 }
 
 export default function LessonHeader({
@@ -29,8 +29,8 @@ export default function LessonHeader({
 					<p className="font-bold text-4xl uppercase">Final boss</p>
 				) : (
 					<>
-						<div className="border-4 py-4 px-8 text-5xl">{lesson.level}</div>
-						<p className="font-bold text-4xl uppercase">{lesson.title}</p>
+						<div className="border-4 py-4 px-8 text-5xl">{lesson?.level}</div>
+						<p className="font-bold text-4xl uppercase">{lesson?.title}</p>
 					</>
 				)}
 			</div>
