@@ -5,7 +5,7 @@ export interface IChapter {
 	slug: string;
 	title: string;
 	description: string;
-	img?: string;
+	imageUrl?: string;
 	sections: ISection[];
 }
 
@@ -50,8 +50,8 @@ export interface IQuestion extends IBaseContent {
 }
 
 export interface IChoice {
-	option: string; // "a", "b", "c", "d"
-	content: string;
+	optionKey: string; // "a", "b", "c", "d"
+	optionText: string;
 }
 
 export interface IBoss {

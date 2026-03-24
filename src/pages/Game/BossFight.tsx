@@ -5,35 +5,28 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { create } from "zustand";
 
+import { api } from "@/api"; // path ke API
 import Brother from "@/assets/game/brother.png";
 import Martin from "@/assets/game/stages/final-boss.png";
 import BgImg from "@/assets/game/stages/level-1.png";
 import LessonHeader from "@/components/Game/LessonHeader";
 import Button from "@/components/ui/Button";
-import { chapters } from "@/data";
 import type { IChapter, ISection } from "@/interfaces/data";
 
 /* =========================
    TYPES
 ========================= */
-
 type Speaker = "boss" | "player";
-
-type Dialogue = {
-	speaker: Speaker;
-	text: string;
-};
+type Dialogue = { speaker: Speaker; text: string };
 
 /* =========================
    DUMMY DATA
 ========================= */
-
 const dummyBossLines = [
 	"Your logic is flawed. Explain how three can be one.",
 	"Clarify the distinction between nature and person.",
 	"How do you preserve unity without contradiction?",
 ];
-
 const expectedKeywords = [
 	"essence",
 	"person",
@@ -45,14 +38,12 @@ const expectedKeywords = [
 /* =========================
    ZUSTAND STORE
 ========================= */
-
 type GameState = {
 	dialogues: Dialogue[];
 	turn: number;
 	input: string;
 	isThinking: boolean;
 	currentSpeaker: Speaker;
-
 	setInput: (val: string) => void;
 	submitAnswer: () => void;
 	addDialogue: (d: Dialogue) => void;
@@ -64,33 +55,22 @@ const useGameStore = create<GameState>((set, get) => ({
 	input: "",
 	isThinking: false,
 	currentSpeaker: "boss",
-
 	setInput: (val) => set({ input: val }),
-
-	addDialogue: (d) =>
-		set((state) => ({
-			dialogues: [...state.dialogues, d],
-		})),
-
+	addDialogue: (d) => set((state) => ({ dialogues: [...state.dialogues, d] })),
 	submitAnswer: () => {
 		const { input, turn, dialogues } = get();
 		if (!input.trim()) return;
 
 		const lower = input.toLowerCase();
-
 		const score = expectedKeywords.filter((k) => lower.includes(k)).length;
 
 		let response = "";
-		if (score >= 3) {
-			response = "You argue well... but I'm not convinced yet.";
-		} else if (score >= 1) {
+		if (score >= 3) response = "You argue well... but I'm not convinced yet.";
+		else if (score >= 1)
 			response = "Partial understanding. Refine your reasoning.";
-		} else {
-			response = "That doesn't address the core issue.";
-		}
+		else response = "That doesn't address the core issue.";
 
 		const nextTurn = turn + 1;
-
 		set({
 			isThinking: true,
 			currentSpeaker: "player",
@@ -98,16 +78,10 @@ const useGameStore = create<GameState>((set, get) => ({
 			input: "",
 		});
 
-		// simulate thinking delay
 		setTimeout(() => {
 			const nextLines: Dialogue[] = [{ speaker: "boss", text: response }];
-
-			if (dummyBossLines[nextTurn]) {
-				nextLines.push({
-					speaker: "boss",
-					text: dummyBossLines[nextTurn],
-				});
-			}
+			if (dummyBossLines[nextTurn])
+				nextLines.push({ speaker: "boss", text: dummyBossLines[nextTurn] });
 
 			set((state) => ({
 				dialogues: [...state.dialogues, ...nextLines],
@@ -122,7 +96,6 @@ const useGameStore = create<GameState>((set, get) => ({
 /* =========================
    COMPONENTS
 ========================= */
-
 function GameHeader({
 	chapter,
 	section,
@@ -135,45 +108,30 @@ function GameHeader({
 			<Button to={`/chapter/${chapter.slug}`} customClass="py-2 px-8">
 				{"<"} Back
 			</Button>
-
 			<div className="w-full h-2 mt-8 bg-black"></div>
-
 			<LessonHeader chapter={chapter} section={section} />
 		</div>
 	);
 }
 
-/* =========================
-   TYPING EFFECT
-========================= */
-
 function useTyping(text: string, speed = 20) {
 	const [displayed, setDisplayed] = useState("");
-
 	useEffect(() => {
 		setDisplayed("");
 		let i = 0;
-
 		const interval = setInterval(() => {
 			i++;
 			setDisplayed(text.slice(0, i));
 			if (i >= text.length) clearInterval(interval);
 		}, speed);
-
 		return () => clearInterval(interval);
 	}, [text]);
-
 	return displayed;
 }
-
-/* =========================
-   DIALOGUE BOX
-========================= */
 
 function DialogueBox() {
 	const { dialogues } = useGameStore();
 	const last = dialogues[dialogues.length - 1];
-
 	const typed = useTyping(last.text);
 
 	return (
@@ -181,49 +139,32 @@ function DialogueBox() {
 			<h1 className="text-2xl capitalize">
 				{last.speaker === "boss" ? "Martin Luther" : "You"}
 			</h1>
-
 			<div className="bg-black h-1"></div>
-
 			<p>{typed}</p>
 		</div>
 	);
 }
 
-/* =========================
-   CHARACTER AREA
-========================= */
-
 function CharacterArea() {
 	const { currentSpeaker } = useGameStore();
-
 	return (
 		<div className="flex justify-between items-end mt-10 px-5">
 			<img
 				src={Brother}
 				alt="Brother"
-				className={`h-64 object-contain transition ${
-					currentSpeaker === "player" ? "scale-105 opacity-100" : "opacity-50"
-				}`}
+				className={`h-64 object-contain transition ${currentSpeaker === "player" ? "scale-105 opacity-100" : "opacity-50"}`}
 			/>
-
 			<img
 				src={Martin}
 				alt="Martin"
-				className={`h-48 object-contain transition ${
-					currentSpeaker === "boss" ? "scale-105 opacity-100" : "opacity-50"
-				}`}
+				className={`h-48 object-contain transition ${currentSpeaker === "boss" ? "scale-105 opacity-100" : "opacity-50"}`}
 			/>
 		</div>
 	);
 }
 
-/* =========================
-   INPUT BAR
-========================= */
-
 function InputBar() {
 	const { input, setInput, submitAnswer, isThinking } = useGameStore();
-
 	return (
 		<div className="bg-white fixed bottom-0 w-full border-4 border-black z-20">
 			<form
@@ -243,7 +184,6 @@ function InputBar() {
 						isThinking ? "Enemy is thinking..." : "Type your answer..."
 					}
 				/>
-
 				<Button type="submit" disabled={isThinking} customClass="py-2 px-6">
 					Submit
 				</Button>
@@ -253,13 +193,32 @@ function InputBar() {
 }
 
 /* =========================
-   MAIN
+   MAIN COMPONENT
 ========================= */
-
 export default function BossFight() {
 	const { chapterSlug } = useParams();
-	const chapter = chapters.find((c) => c.slug === chapterSlug) as IChapter;
-	const section: ISection = chapter.sections[chapter.sections.length - 1];
+	const [chapter, setChapter] = useState<IChapter | null>(null);
+	const [section, setSection] = useState<ISection | null>(null);
+	const [loading, setLoading] = useState(true);
+
+	useEffect(() => {
+		if (!chapterSlug) return;
+
+		api
+			.getChapterFull(chapterSlug)
+			.then((res) => {
+				if (res.success && res.data) {
+					const chapterData = res.data as IChapter;
+					setChapter(chapterData);
+					// ambil section terakhir sebagai boss
+					setSection(chapterData.sections[chapterData.sections.length - 1]);
+				}
+			})
+			.finally(() => setLoading(false));
+	}, [chapterSlug]);
+
+	if (loading) return <div>Loading...</div>;
+	if (!chapter || !section) return <div>Chapter or Boss not found</div>;
 
 	return (
 		<div className="relative w-full h-screen">

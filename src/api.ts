@@ -14,6 +14,20 @@ type RequestOptions = {
 	token?: string;
 };
 
+// Utility: convert snake_case keys to camelCase recursively
+function snakeToCamel(obj: any): any {
+	if (Array.isArray(obj)) return obj.map(snakeToCamel);
+	if (obj && typeof obj === "object") {
+		return Object.fromEntries(
+			Object.entries(obj).map(([key, value]) => [
+				key.replace(/_([a-z])/g, (_, c) => c.toUpperCase()),
+				snakeToCamel(value),
+			]),
+		);
+	}
+	return obj;
+}
+
 async function request<T = any>(
 	endpoint: string,
 	options: RequestOptions = {},
@@ -29,64 +43,40 @@ async function request<T = any>(
 		...(body && { body: JSON.stringify(body) }),
 	});
 
-	return res.json();
+	const json = await res.json();
+
+	// otomatis convert data camelCase
+	if (json.data) {
+		json.data = snakeToCamel(json.data);
+	}
+
+	return json;
 }
 
 export const api = {
-	//========= LOGIN ==============
 	login: (email: string, password: string) =>
-		request("/auth/login", {
-			method: "POST",
-			body: { email, password },
-		}),
+		request("/auth/login", { method: "POST", body: { email, password } }),
 
-	/* ===== CHAPTERS ===== */
 	getChapters: () => request("/chapters"),
-
 	getChapter: (slug: string) => request(`/chapters/${slug}`),
-
 	getChapterFull: (slug: string) => request(`/chapters/${slug}/full`),
-
-	/* ===== SECTIONS ===== */
 	getSection: (slug: string) => request(`/sections/${slug}`),
-
 	getSectionsByChapter: (chapterSlug: string) =>
 		request(`/chapters/${chapterSlug}/sections`),
-
 	getSectionBoss: (sectionSlug: string) =>
 		request(`/sections/${sectionSlug}/boss`),
-
-	/* ===== LESSONS ===== */
 	getLesson: (slug: string) => request(`/lessons/${slug}`),
-
 	getLessonsBySection: (sectionSlug: string) =>
 		request(`/sections/${sectionSlug}/lessons`),
-
 	getLessonFull: (slug: string) => request(`/lessons/${slug}/full`),
-
-	/* ===== CONTENTS ===== */
 	getContent: (slug: string) => request(`/contents/${slug}`),
-
 	getContentsByLesson: (lessonSlug: string, type?: "material" | "question") =>
 		request(`/lessons/${lessonSlug}/contents${type ? `?type=${type}` : ""}`),
-
-	/* ===== ANSWERS (AUTH) ===== */
 	submitAnswer: (
 		token: string,
-		payload: {
-			contentSlug: string;
-			selectedOption: string;
-		},
-	) =>
-		request("/answers", {
-			method: "POST",
-			body: payload,
-			token,
-		}),
-
-	/* ===== PROGRESS (AUTH) ===== */
+		payload: { contentSlug: string; selectedOption: string },
+	) => request("/answers", { method: "POST", body: payload, token }),
 	getProgress: (token: string) => request("/progress", { token }),
-
 	updateLessonProgress: (
 		token: string,
 		lessonSlug: string,
@@ -100,7 +90,6 @@ export const api = {
 			body: payload,
 			token,
 		}),
-
 	updateContentProgress: (
 		token: string,
 		contentSlug: string,
@@ -111,8 +100,6 @@ export const api = {
 			body: payload,
 			token,
 		}),
-
-	/* ===== BOSS (AUTH) ===== */
 	submitBoss: (
 		token: string,
 		bossSlug: string,

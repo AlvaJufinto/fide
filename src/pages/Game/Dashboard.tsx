@@ -1,8 +1,11 @@
 /** @format */
 
+import { useEffect, useState } from "react";
+
+import { api } from "@/api";
 import FrontGame from "@/components/layout/FrontGame";
 import Button from "@/components/ui/Button";
-import { chapters } from "@/data";
+import PageLoading from "@/components/ui/PageLoading";
 import type { IChapter } from "@/interfaces/data";
 
 interface ChapterCardProps {
@@ -31,17 +34,33 @@ function ChapterCard({ chapter }: ChapterCardProps) {
 }
 
 function Dashboard() {
+	const [chapters, setChapters] = useState<IChapter[]>([]);
+	const [loading, setLoading] = useState(true);
+
+	useEffect(() => {
+		api
+			.getChapters()
+			.then((res) => {
+				if (res.success && res.data) setChapters(res.data);
+			})
+			.finally(() => setLoading(false));
+	}, []);
+
 	return (
 		<FrontGame>
 			<div className="w-full flex flex-col items-center">
-				{chapters.map((chapter, i, arr) => (
-					<>
-						<ChapterCard key={i} chapter={chapter} />
-						{i + 1 !== arr.length && (
-							<div className="border-l-10 border-dashed border-gray h-48"></div>
-						)}
-					</>
-				))}
+				{loading ? (
+					<PageLoading isLoading={loading} />
+				) : (
+					chapters.map((chapter, i, arr) => (
+						<>
+							<ChapterCard key={i} chapter={chapter} />
+							{i + 1 !== arr.length && (
+								<div className="border-l-10 border-dashed border-gray h-48"></div>
+							)}
+						</>
+					))
+				)}
 			</div>
 		</FrontGame>
 	);

@@ -11,8 +11,6 @@ export default function ProtectedRoute({
 }) {
 	const { isAuthenticated, loading } = useAuth();
 
-	console.log("AUTH:", { isAuthenticated, loading });
-
 	if (loading) {
 		return <div>Loading...</div>;
 	}

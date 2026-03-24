@@ -12,7 +12,7 @@ interface IQuestionProps {
 export default function Question({ content }: IQuestionProps) {
 	const { selected, setSelected, isChecked, setIsChecked } = useLessonStore();
 
-	const isCorrect = selected?.option === content.correctAnswer;
+	const isCorrect = selected?.optionKey === content.correctAnswer;
 
 	return (
 		<div className="mt-10 flex flex-col items-center">
@@ -20,7 +20,7 @@ export default function Question({ content }: IQuestionProps) {
 
 			<div className="mt-5 flex flex-col gap-5 w-full max-w-3xl">
 				{content.choices.map((c, i) => {
-					const isSelected = selected?.option === c.option;
+					const isSelected = selected?.optionKey === c.optionKey;
 					const isRight = isCorrect && isSelected && isChecked;
 					const isWrong = !isCorrect && isSelected && isChecked;
 
@@ -38,9 +38,9 @@ export default function Question({ content }: IQuestionProps) {
 							}}
 						>
 							<div className="w-20 uppercase text-4xl font-bold text-center">
-								{c.option}.
+								{c.optionKey}.
 							</div>
-							<p className="flex-1 text-2xl">{c.content}</p>
+							<p className="flex-1 text-2xl">{c.optionText}</p>
 						</div>
 					);
 				})}

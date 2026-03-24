@@ -15,7 +15,6 @@ import Lesson from "./pages/Game/Lesson";
 function App() {
 	const { loading } = useAuth();
 
-	// penting: hindarin flicker sebelum token ke-load
 	if (loading) return <div>Loading...</div>;
 
 	return (
