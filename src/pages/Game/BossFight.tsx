@@ -10,150 +10,11 @@ import Martin from "@/assets/game/stages/final-boss.png";
 import BgImg from "@/assets/game/stages/level-1.png";
 import LessonHeader from "@/components/Game/LessonHeader";
 import Button from "@/components/ui/Button";
+import { getRandomQuote } from "@/components/ui/PageLoading";
+import useDebateGame from "@/hooks/useDebateGame";
 import type { IChapter, ISection } from "@/interfaces/data";
+import type { ChatMessage, Speaker } from "@/interfaces/debate";
 
-type Speaker = "boss" | "player";
-
-type ChatMessage = {
-	from: "boss" | "player" | "feedback";
-	text: string;
-};
-
-function useDebateGame(bossSection: ISection | null) {
-	const maxQuestions = 5;
-	const currentIndexRef = useRef(0);
-	const [currentIndex, setCurrentIndex] = useState(0);
-	const [playerAnswer, setPlayerAnswer] = useState("");
-	const [chatLog, setChatLog] = useState<ChatMessage[]>([]);
-	const [isThinking, setIsThinking] = useState(false);
-	const [score, setScore] = useState(0);
-	const [finished, setFinished] = useState(false);
-
-	const questionsRef = useRef<string[]>([]);
-
-	// FIX 3: stable init — set questions and seed first boss message once
-	useEffect(() => {
-		const qs = bossSection?.boss?.expectedPoints.slice(0, maxQuestions) ?? [];
-		questionsRef.current = qs;
-		if (qs.length > 0) {
-			setChatLog([{ from: "boss", text: qs[0] }]);
-		}
-	}, [bossSection]);
-
-	const submitAnswer = async () => {
-		const questions = questionsRef.current;
-		const idx = currentIndexRef.current;
-		const currentQuestion = questions[idx];
-
-		if (!playerAnswer.trim() || !currentQuestion || isThinking) return;
-
-		const answer = playerAnswer;
-		setPlayerAnswer("");
-		setIsThinking(true);
-
-		// Append player message immediately
-		setChatLog((prev) => [...prev, { from: "player", text: answer }]);
-
-		try {
-			const res = await fetch("https://ai.sumopod.com/v1/chat/completions", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-					Authorization: `Bearer ${import.meta.env.VITE_LLM_KEY}`,
-				},
-				body: JSON.stringify({
-					model: "seed-2-0-mini-free",
-					// FIX 1: Ask AI to score 0-20 AND give feedback, structured response
-					messages: [
-						{
-							role: "system",
-							content: `You are a strict debate judge evaluating a student's answer.
-The debate question/point is: "${currentQuestion}"
-The student answered: "${answer}"
-
-Respond ONLY in this exact JSON format (no markdown, no extra text):
-{"score": <integer 0-20>, "feedback": "<1-2 sentence feedback>"}
-
-Score 0-20 based on relevance, accuracy, and argumentation quality.`,
-						},
-						{ role: "user", content: answer },
-					],
-					max_tokens: 150,
-					temperature: 0.3,
-				}),
-			});
-
-			const data = await res.json();
-			const raw = data.choices?.[0]?.message?.content || "{}";
-
-			let parsedScore = 10;
-			let feedback = "Keep going!";
-			try {
-				const parsed = JSON.parse(raw);
-				parsedScore = Math.min(20, Math.max(0, parsed.score ?? 10));
-				feedback = parsed.feedback ?? feedback;
-			} catch {
-				// fallback if AI didn't follow format
-				feedback = raw;
-			}
-
-			// FIX 5: clamp total score to 100
-			setScore((prev) => Math.min(prev + parsedScore, 100));
-			setChatLog((prev) => [
-				...prev,
-				{ from: "feedback", text: `⚖️ ${feedback} (+${parsedScore} pts)` },
-			]);
-
-			// FIX 2: use ref to get correct next index, no stale closure
-			const nextIndex = idx + 1;
-			currentIndexRef.current = nextIndex;
-			setCurrentIndex(nextIndex);
-
-			setTimeout(() => {
-				if (nextIndex < questions.length) {
-					setChatLog((prev) => [
-						...prev,
-						{ from: "boss", text: questions[nextIndex] },
-					]);
-				} else {
-					setChatLog((prev) => [
-						...prev,
-						{
-							from: "boss",
-							text: "The debate is over. You've made your case.",
-						},
-					]);
-					setFinished(true);
-				}
-				setIsThinking(false);
-			}, 800);
-		} catch (err) {
-			console.error(err);
-			setChatLog((prev) => [
-				...prev,
-				{ from: "feedback", text: "The judge couldn't respond. Try again." },
-			]);
-			setIsThinking(false);
-		}
-	};
-
-	return {
-		currentQuestion: questionsRef.current[currentIndex],
-		playerAnswer,
-		setPlayerAnswer,
-		submitAnswer,
-		chatLog,
-		isThinking,
-		currentIndex,
-		maxQuestions,
-		score,
-		finished,
-	};
-}
-
-/* =========================
-   CHARACTER AREA
-========================= */
 function CharacterArea({
 	currentSpeaker,
 	isThinking,
@@ -164,7 +25,9 @@ function CharacterArea({
 	return (
 		<div className="flex justify-between items-end px-5">
 			{/* Player */}
-			<div className="relative flex flex-col items-center">
+			<div
+				className={`relative flex flex-col items-center ${currentSpeaker === "player" ? "animate-float-pixel" : ""}`}
+			>
 				<img
 					src={Brother}
 					alt="Brother"
@@ -173,7 +36,7 @@ function CharacterArea({
 					}`}
 				/>
 				<span
-					className={`mt-1 text-xs px-2 py-1 rounded font-bold ${
+					className={`mt-1 text-xs px-2 py-1 font-bold ${
 						currentSpeaker === "player"
 							? "bg-blue-500 text-white"
 							: "bg-gray-300 text-gray-600"
@@ -183,8 +46,15 @@ function CharacterArea({
 				</span>
 			</div>
 
+			<div className="text-5xl self-center border-4 border-black bg-white p-4">
+				{" "}
+				VS{" "}
+			</div>
+
 			{/* Boss */}
-			<div className="relative flex flex-col items-center">
+			<div
+				className={`relative flex flex-col items-center ${currentSpeaker === "boss" ? "animate-float-pixel" : ""}`}
+			>
 				<img
 					src={Martin}
 					alt="Martin"
@@ -193,7 +63,7 @@ function CharacterArea({
 					}`}
 				/>
 				<span
-					className={`mt-1 text-xs px-2 py-1 rounded font-bold ${
+					className={`mt-1 text-xs px-2 py-1 font-bold ${
 						currentSpeaker === "boss"
 							? "bg-red-500 text-white"
 							: "bg-gray-300 text-gray-600"
@@ -223,7 +93,7 @@ function ChatLog({ messages }: { messages: ChatMessage[] }) {
 				if (msg.from === "boss") {
 					return (
 						<div key={i} className="flex items-start gap-2 max-w-[80%]">
-							<div className="border-2 border-red-500 bg-red-100 px-3 py-2 rounded-lg text-sm">
+							<div className="border-2 border-red-500 bg-red-100 px-3 py-2 lg text-sm">
 								<span className="font-bold text-red-700 block text-xs mb-1">
 									Martin Luther
 								</span>
@@ -238,7 +108,7 @@ function ChatLog({ messages }: { messages: ChatMessage[] }) {
 							key={i}
 							className="flex items-start gap-2 max-w-[80%] ml-auto flex-row-reverse"
 						>
-							<div className="border-2 border-blue-500 bg-blue-100 px-3 py-2 rounded-lg text-sm">
+							<div className="border-2 border-blue-500 bg-blue-100 px-3 py-2 lg text-sm">
 								<span className="font-bold text-blue-700 block text-xs mb-1 text-right">
 									You
 								</span>
@@ -251,7 +121,7 @@ function ChatLog({ messages }: { messages: ChatMessage[] }) {
 				return (
 					<div
 						key={i}
-						className="mx-auto border-2 border-yellow-500 bg-yellow-100 px-3 py-2 rounded-lg text-sm text-center max-w-[90%]"
+						className="mx-auto border-2 border-yellow-500 bg-yellow-100 px-3 py-2 lg text-sm text-center max-w-[90%]"
 					>
 						<span className="font-bold text-yellow-700 block text-xs mb-1">
 							Judge's Feedback
@@ -261,6 +131,50 @@ function ChatLog({ messages }: { messages: ChatMessage[] }) {
 				);
 			})}
 			<div ref={bottomRef} />
+		</div>
+	);
+}
+
+function LoadingScreen({
+	message = "Loading Boss Fight...",
+}: {
+	message?: string;
+}) {
+	const [progress, setProgress] = useState(0);
+
+	const [quote, setQuote] = useState(getRandomQuote());
+
+	useEffect(() => {
+		setQuote(getRandomQuote());
+	}, []);
+
+	useEffect(() => {
+		const interval = setInterval(() => {
+			setProgress((prev) => {
+				if (prev >= 100) {
+					clearInterval(interval);
+					return 100;
+				}
+				return prev + Math.floor(Math.random() * 5 + 1);
+			});
+		}, 100);
+		return () => clearInterval(interval);
+	}, []);
+
+	return (
+		<div className="fixed inset-0 flex flex-col justify-center items-center bg-white text-primary z-50">
+			<p className="text-4xl font-bold uppercase">{message}</p>
+			<div className="p-4 my-4 bg-gray-100 max-w-xl md:text-sm">
+				<p className="italic mb-2 text-xl">{quote.text}</p>
+				<p className="font-bold text-right mt-1 text-2xl">— {quote.author}</p>
+			</div>
+			<div className="w-3/4 h-10 bg-white overflow-hidden border-2 border-black">
+				<div
+					className="h-full bg-primary transition-all duration-100"
+					style={{ width: `${Math.min(progress, 100)}%` }}
+				/>
+			</div>
+			<p className="mt-2 text-2xl">{Math.min(progress, 100)}%</p>
 		</div>
 	);
 }
@@ -289,7 +203,7 @@ export default function BossFight() {
 
 	const game = useDebateGame(section);
 
-	if (loading) return <div>Loading...</div>;
+	if (loading) return <LoadingScreen />;
 	if (!chapter || !section) return <div>Chapter or Boss not found</div>;
 
 	// FIX speaker: boss is active while AI is thinking/responding

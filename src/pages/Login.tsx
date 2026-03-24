@@ -6,7 +6,7 @@ import { useNavigate } from "react-router";
 
 import Button from "@/components/ui/Button";
 import { useAuth } from "@/context/useAuth";
-import { useTyping } from "@/helper";
+import useTyping from "@/hooks/useTyping";
 
 function Input({
 	label,

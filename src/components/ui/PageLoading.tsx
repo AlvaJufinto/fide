@@ -7,7 +7,7 @@ interface PageLoadingProps {
 	loadingText?: string;
 }
 
-const quotes = [
+export const quotes = [
 	{
 		text: "“Pray as though everything depended on God. Work as though everything depended on you.”",
 		author: "St. Augustine",
@@ -90,7 +90,7 @@ const quotes = [
 	},
 ];
 
-function getRandomQuote() {
+export function getRandomQuote() {
 	return quotes[Math.floor(Math.random() * quotes.length)];
 }
 
@@ -111,7 +111,7 @@ export default function PageLoading({
 			<div className="border-5 border-black bg-white px-6 py-4 shadow-[6px_6px_0px_black] flex flex-col items-center text-center animate-float-pixel max-w-md">
 				<h1 className="text-xl font-bold mb-3">{loadingText}</h1>
 				<div className="border-3 border-black p-4 mt-2 bg-gray-100 max-w-xs text-xs md:text-sm">
-					<p className="italic mb-2">"{quote.text}"</p>
+					<p className="italic mb-2">{quote.text}</p>
 					<p className="font-bold text-right mt-1">— {quote.author}</p>
 				</div>
 				<div className="mt-4 w-12 h-12 border-4 border-black animate-spin rounded-full"></div>

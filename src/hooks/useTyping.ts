@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-export function useTyping(text: string, speed = 5) {
+export default function useTyping(text: string, speed = 5) {
 	const [displayed, setDisplayed] = useState("");
 	const lastText = useRef("");
 
