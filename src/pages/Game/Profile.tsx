@@ -1,16 +1,20 @@
 /** @format */
 
-import { useEffect, useState } from "react";
+import {
+	useEffect,
+	useState,
+} from 'react';
 
-import { api } from "@/api";
+import { api } from '@/api';
 /* ================= IMPORT ICON ================= */
-import Level1 from "@/assets/icon/level/cathecumen.png";
-import Level3 from "@/assets/icon/level/discipulus.png";
-import Level5 from "@/assets/icon/level/doctor.png";
-import Level2 from "@/assets/icon/level/fidelis.png";
-import Level4 from "@/assets/icon/level/theologus.png";
-import FrontGame from "@/components/layout/FrontGame";
-import PageLoading from "@/components/ui/PageLoading";
+import Level1 from '@/assets/icon/level/cathecumen.png';
+import Level3 from '@/assets/icon/level/discipulus.png';
+import Level5 from '@/assets/icon/level/doctor.png';
+import Level2 from '@/assets/icon/level/fidelis.png';
+import Level4 from '@/assets/icon/level/theologus.png';
+import FrontGame from '@/components/layout/FrontGame';
+import PageLoading from '@/components/ui/PageLoading';
+import type { ProfileData } from '@/interfaces/profile';
 
 const LEVEL_META = {
 	1: { img: Level1 },
@@ -19,27 +23,6 @@ const LEVEL_META = {
 	4: { img: Level4 },
 	5: { img: Level5 },
 };
-
-interface ProfileData {
-	userId: string;
-	points: number;
-	level: number;
-	rank: string;
-	breakdown: {
-		correctAnswers: number;
-		completedLessons: number;
-		bossSubmissions: number;
-		pointsPerCorrectAnswer: number;
-		pointsPerCompletedLesson: number;
-		pointsPerBossSubmission: number;
-	};
-	nextRank: {
-		level: number;
-		rank: string;
-		requiredPoints: number;
-		pointsToNextRank: number;
-	};
-}
 
 const toRoman = (num: number) => {
 	const roman = [
@@ -132,7 +115,7 @@ function Profile() {
 					{/* XP */}
 					<div className="w-full border-2 border-black p-3 flex flex-col gap-2">
 						<div className="flex justify-between text-sm font-bold">
-							<span>XP</span>
+							<span>Grace Points (XP)</span>
 							<span>{points}</span>
 						</div>
 

@@ -106,7 +106,7 @@ function Level() {
 						className="w-28 mb-3"
 					/>
 
-					<h2 className="font-bold text-xl">LEVEL {level}</h2>
+					<h2 className="font-bold text-xl">LEVEL {toRoman(level)}</h2>
 
 					<h1 className="text-3xl text-primary font-bold">{rank}</h1>
 
@@ -117,7 +117,7 @@ function Level() {
 							<div
 								key={i}
 								className={`w-3 h-5 border-2 border-black ${
-									i < filledSegments ? "bg-black" : "bg-white"
+									i < filledSegments ? "bg-primary" : "bg-white"
 								}`}
 							/>
 						))}

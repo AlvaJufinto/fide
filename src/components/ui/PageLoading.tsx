@@ -1,5 +1,8 @@
 /** @format */
-import { useEffect, useState } from "react";
+import {
+	useEffect,
+	useState,
+} from 'react';
 
 /* ===================== REUSABLE PAGE LOADING ===================== */
 interface PageLoadingProps {
@@ -128,7 +131,7 @@ export default function PageLoading({
 					<p className="italic mb-2">{quote.text}</p>
 					<p className="font-bold text-right mt-1">— {quote.author}</p>
 				</div>
-				<div className="mt-4 w-full max-w-xs h-6 bg-white border-2 border-black rounded overflow-hidden">
+				<div className="mt-4 w-full max-w-xs h-6 bg-white border-2 border-black overflow-hidden">
 					<div
 						className="h-full bg-primary transition-all duration-300"
 						style={{ width: `${progress}%` }}

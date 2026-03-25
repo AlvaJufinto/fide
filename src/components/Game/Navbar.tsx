@@ -1,15 +1,33 @@
 /** @format */
 
-import Cross from "@/assets/game/cross.svg";
-import SacredHeart from "@/assets/game/sacred-heart.svg";
-import FideLogo from "@/assets/logo/fide-text-logo.png";
-import { useAuth } from "@/context/useAuth";
+import {
+	useEffect,
+	useState,
+} from 'react';
 
-import Button from "../ui/Button";
+import { api } from '@/api';
+import Cross from '@/assets/game/cross.svg';
+import SacredHeart from '@/assets/game/sacred-heart.svg';
+import FideLogo from '@/assets/logo/fide-text-logo.png';
+import { useAuth } from '@/context/useAuth';
+import type { ProfileData } from '@/interfaces/profile';
+
+import Button from '../ui/Button';
 
 function Navbar() {
 	const { logout } = useAuth();
 
+	const [profile, setProfile] = useState<ProfileData | null>(null);
+	const [loading, setLoading] = useState(true);
+
+	useEffect(() => {
+		api
+			.getProfile()
+			.then((res) => {
+				if (res.success && res.data) setProfile(res.data);
+			})
+			.finally(() => setLoading(false));
+	}, []);
 	const handleLogout = () => {
 		if (confirm("Are you sure want to Logout?")) logout();
 	};
@@ -21,12 +39,12 @@ function Navbar() {
 				<div className="flex gap-10">
 					<div className="flex gap-5">
 						<div className="flex items-center gap-2 text-2xl text-primary">
-							<img src={SacredHeart} alt="sacred heart" />
+							<img src={SacredHeart} alt="streaks" />
 							<p>2</p>
 						</div>
 						<div className="flex items-center gap-2 text-2xl text-yellow">
-							<img src={Cross} alt="sacred heart" />
-							<p>2</p>
+							<img src={Cross} alt="grace points" />
+							<p>{loading ? "0" : profile?.points}</p>
 						</div>
 					</div>
 					<Button onClick={handleLogout} customClass="py-2 px-4">
