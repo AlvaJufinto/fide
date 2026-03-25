@@ -1,15 +1,18 @@
 /** @format */
 
-import { useEffect, useState } from "react";
+import {
+	useEffect,
+	useState,
+} from 'react';
 
-import { api } from "@/api";
-import Level1 from "@/assets/icon/level/cathecumen.png";
-import Level3 from "@/assets/icon/level/discipulus.png";
-import Level5 from "@/assets/icon/level/doctor.png";
-import Level2 from "@/assets/icon/level/fidelis.png";
-import Level4 from "@/assets/icon/level/theologus.png";
-import FrontGame from "@/components/layout/FrontGame";
-import PageLoading from "@/components/ui/PageLoading";
+import { api } from '@/api';
+import Level1 from '@/assets/icon/level/cathecumen.png';
+import Level3 from '@/assets/icon/level/discipulus.png';
+import Level5 from '@/assets/icon/level/doctor.png';
+import Level2 from '@/assets/icon/level/fidelis.png';
+import Level4 from '@/assets/icon/level/theologus.png';
+import FrontGame from '@/components/layout/FrontGame';
+import PageLoading from '@/components/ui/PageLoading';
 
 const LEVEL_META = {
 	1: { img: Level1 },
@@ -74,7 +77,7 @@ function Level() {
 		);
 	}
 
-	if (!profile) return <div>Failed to load profile</div>;
+	if (!profile) return <FrontGame>Failed to load profile</FrontGame>;
 
 	const { points, level, rank, nextRank } = profile;
 

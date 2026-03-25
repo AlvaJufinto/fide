@@ -20,6 +20,7 @@ export interface ISection {
 }
 
 export interface ILesson {
+	id: number;
 	level: string;
 	slug: string;
 	title: string;

@@ -1,17 +1,27 @@
 /** @format */
 
-import { useEffect, useState } from "react";
+import {
+	useEffect,
+	useRef,
+	useState,
+} from 'react';
 
-import { useParams } from "react-router";
+import { useParams } from 'react-router';
 
-import { api } from "@/api"; // path ke api
-import LessonHeader from "@/components/Game/LessonHeader";
-import LessonNavigation from "@/components/Game/LessonNavigation";
-import LoadingScreen from "@/components/Game/LoadingScreen";
-import Question from "@/components/Game/Question";
-import Button from "@/components/ui/Button";
-import type { IChapter, ILesson, ISection } from "@/interfaces/data";
-import { useLessonStore } from "@/stores/lessonStore";
+import { api } from '@/api';
+import LessonHeader from '@/components/Game/LessonHeader';
+import LessonNavigation from '@/components/Game/LessonNavigation';
+import LoadingScreen from '@/components/Game/LoadingScreen';
+import Question from '@/components/Game/Question';
+import FrontGame from '@/components/layout/FrontGame';
+import Button from '@/components/ui/Button';
+import type {
+	IChapter,
+	ILesson,
+	ISection,
+} from '@/interfaces/data';
+import { useLessonStore } from '@/stores/lessonStore';
+import { useProgressStore } from '@/stores/progressStore';
 
 interface IContentProps {
 	currentContent: ILesson["contents"][number];
@@ -37,13 +47,17 @@ function Content({ currentContent }: IContentProps) {
 }
 
 export default function Lesson() {
+	const visited = useRef<Set<string>>(new Set());
+
 	const { chapterSlug, sectionSlug, lessonSlug } = useParams();
-	const { current, selected } = useLessonStore();
+	const { current, selected, next } = useLessonStore();
 
 	const [lesson, setLesson] = useState<ILesson | null>(null);
 	const [section, setSection] = useState<ISection | null>(null);
 	const [chapter, setChapter] = useState<IChapter | null>(null);
 	const [loading, setLoading] = useState(true);
+
+	const currentContent = lesson?.contents[current];
 
 	useEffect(() => {
 		if (!chapterSlug || !sectionSlug || !lessonSlug) return;
@@ -60,8 +74,10 @@ export default function Lesson() {
 
 				if (chapterRes.success && chapterRes.data)
 					setChapter(chapterRes.data as IChapter);
+
 				if (sectionRes.success && sectionRes.data)
 					setSection(sectionRes.data as ISection);
+
 				if (lessonRes.success && lessonRes.data)
 					setLesson(lessonRes.data as ILesson);
 			} catch (err) {
@@ -75,11 +91,55 @@ export default function Lesson() {
 	}, [chapterSlug, sectionSlug, lessonSlug]);
 
 	const notFound = !loading && (!chapter || !section || !lesson);
-	if (notFound) return <div>Lesson not found</div>;
+	if (notFound) return <FrontGame>Lesson not found</FrontGame>;
 
-	const currentContent = lesson?.contents[current];
-	// @ts-ignore
-	const progress = Math.floor(((current + 1) / lesson?.contents?.length) * 100);
+	const refreshProgress = async () => {
+		await useProgressStore.getState().fetch();
+	};
+
+	const handleNext = async () => {
+		if (!lesson || !currentContent) return;
+
+		// move next
+		next();
+
+		if (!visited.current.has(currentContent.slug)) {
+			visited.current.add(currentContent.slug);
+
+			// hit API background
+			api
+				.updateContentProgress(currentContent.slug, { isCompleted: true })
+				.catch(console.error);
+		}
+
+		refreshProgress().catch(console.error);
+	};
+
+	const updateLessonProgress = async () => {
+		if (!lesson) return;
+		const isLast = current === lesson.contents.length - 1;
+		console.log("🚀 ~ updateLessonProgress ~ current:", current);
+		console.log("🚀 ~ updateLessonProgress ~ isLast:", isLast);
+
+		if (currentContent) {
+			console.log("🚀 ~ MASUK PLEASE updateLessonProgress ~ isLast:", isLast);
+
+			await api.updateLessonProgress(lesson.slug, {
+				status: isLast ? "completed" : "in_progress",
+				lastContentSlug: currentContent.slug,
+			});
+		}
+	};
+
+	useEffect(() => {
+		updateLessonProgress();
+	}, [currentContent]);
+
+	// ================= UI =================
+	const progress = lesson
+		? Math.floor(((current + 1) / lesson.contents.length) * 100)
+		: 0;
+
 	const isCurrentCorrect =
 		currentContent?.type === "question"
 			? selected?.optionKey === currentContent.correctAnswer
@@ -91,16 +151,12 @@ export default function Lesson() {
 				<Button to={`/chapter/${chapterSlug}`} customClass="py-2 px-8">
 					{"<"} Back
 				</Button>
+
 				{loading && <LoadingScreen message="Loading Lessons..." />}
-				{!notFound && !loading && (
+
+				{!loading && lesson && chapter && section && (
 					<>
-						{!(!chapter || !section || !lesson) && (
-							<LessonHeader
-								chapter={chapter}
-								section={section}
-								lesson={lesson}
-							/>
-						)}
+						<LessonHeader chapter={chapter} section={section} lesson={lesson} />
 
 						<div className="mt-4 flex justify-center">
 							{currentContent && <Content currentContent={currentContent} />}
@@ -108,12 +164,14 @@ export default function Lesson() {
 					</>
 				)}
 			</div>
-			{lesson && !notFound && !loading && (
+
+			{lesson && !loading && (
 				<LessonNavigation
 					lessonLength={lesson.contents.length}
 					progress={progress}
 					currentContentType={currentContent?.type ?? "material"}
 					isCurrentCorrect={isCurrentCorrect}
+					onNext={handleNext}
 				/>
 			)}
 		</div>

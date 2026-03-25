@@ -1,14 +1,16 @@
 /** @format */
 
-import { useLessonStore } from "@/stores/lessonStore";
+import { useLessonStore } from '@/stores/lessonStore';
 
-import Button from "../ui/Button";
+import Button from '../ui/Button';
 
 interface ILessonNavigationProps {
 	lessonLength: number;
 	progress: number;
 	currentContentType: string;
 	isCurrentCorrect?: boolean;
+
+	onNext: () => void;
 }
 
 export default function LessonNavigation({
@@ -16,8 +18,9 @@ export default function LessonNavigation({
 	progress,
 	currentContentType,
 	isCurrentCorrect = true,
+	onNext,
 }: ILessonNavigationProps) {
-	const { current, setCurrent, isChecked } = useLessonStore();
+	const { current, prev, isChecked } = useLessonStore();
 
 	const canNext =
 		current + 1 < lessonLength &&
@@ -26,11 +29,7 @@ export default function LessonNavigation({
 	return (
 		<div className="bg-white fixed bottom-0 w-full border-4 border-black">
 			<div className="inner-game-container flex justify-between py-4 gap-5 max-w-5xl mx-auto">
-				<Button
-					onClick={() => setCurrent(current - 1)}
-					customClass="py-2 px-6"
-					disabled={current === 0}
-				>
+				<Button onClick={prev} customClass="py-2 px-6" disabled={current === 0}>
 					{"<"} Previous
 				</Button>
 
@@ -45,7 +44,7 @@ export default function LessonNavigation({
 				</div>
 
 				<Button
-					onClick={() => setCurrent(current + 1)}
+					onClick={onNext} // 🔥 pindah ke handler
 					disabled={!canNext}
 					customClass="py-2 px-6"
 				>

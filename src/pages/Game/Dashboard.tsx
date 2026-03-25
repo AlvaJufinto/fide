@@ -1,12 +1,15 @@
 /** @format */
 
-import { useEffect, useState } from "react";
+import {
+	useEffect,
+	useState,
+} from 'react';
 
-import { api } from "@/api";
-import FrontGame from "@/components/layout/FrontGame";
-import Button from "@/components/ui/Button";
-import PageLoading from "@/components/ui/PageLoading";
-import type { IChapter } from "@/interfaces/data";
+import { api } from '@/api';
+import FrontGame from '@/components/layout/FrontGame';
+import Button from '@/components/ui/Button';
+import PageLoading from '@/components/ui/PageLoading';
+import type { IChapter } from '@/interfaces/data';
 
 interface ChapterCardProps {
 	chapter: IChapter;
@@ -38,6 +41,10 @@ function Dashboard() {
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
+		api.getProgress().then((res) => {
+			console.log(res);
+		});
+
 		api
 			.getChapters()
 			.then((res) => {
