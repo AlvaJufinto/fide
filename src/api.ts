@@ -14,7 +14,6 @@ type RequestOptions = {
 	token?: string;
 };
 
-// Utility: convert snake_case keys to camelCase recursively
 function snakeToCamel(obj: any): any {
 	if (Array.isArray(obj)) return obj.map(snakeToCamel);
 	if (obj && typeof obj === "object") {
@@ -32,20 +31,21 @@ async function request<T = any>(
 	endpoint: string,
 	options: RequestOptions = {},
 ): Promise<ApiResponse<T>> {
-	const { method = "GET", body, token } = options;
+	const { method = "GET", body } = options;
+
+	const token = localStorage.getItem("token") || "";
 
 	const res = await fetch(`${BASE_URL}${endpoint}`, {
 		method,
 		headers: {
 			"Content-Type": "application/json",
-			...(token && { Authorization: `Bearer ${token}` }),
+			...(token ? { Authorization: `Bearer ${token}` } : {}),
 		},
 		...(body && { body: JSON.stringify(body) }),
 	});
 
 	const json = await res.json();
 
-	// otomatis convert data camelCase
 	if (json.data) {
 		json.data = snakeToCamel(json.data);
 	}
@@ -72,13 +72,13 @@ export const api = {
 	getContent: (slug: string) => request(`/contents/${slug}`),
 	getContentsByLesson: (lessonSlug: string, type?: "material" | "question") =>
 		request(`/lessons/${lessonSlug}/contents${type ? `?type=${type}` : ""}`),
-	submitAnswer: (
-		token: string,
-		payload: { contentSlug: string; selectedOption: string },
-	) => request("/answers", { method: "POST", body: payload, token }),
-	getProgress: (token: string) => request("/progress", { token }),
+
+	submitAnswer: (payload: { contentSlug: string; selectedOption: string }) =>
+		request("/answers", { method: "POST", body: payload }),
+
+	getProgress: () => request("/progress"),
+
 	updateLessonProgress: (
-		token: string,
 		lessonSlug: string,
 		payload?: {
 			status?: "not_started" | "in_progress" | "completed";
@@ -88,26 +88,20 @@ export const api = {
 		request(`/progress/lesson/${lessonSlug}`, {
 			method: "POST",
 			body: payload,
-			token,
 		}),
+
 	updateContentProgress: (
-		token: string,
 		contentSlug: string,
 		payload?: { isCompleted?: boolean },
 	) =>
 		request(`/progress/content/${contentSlug}`, {
 			method: "POST",
 			body: payload,
-			token,
 		}),
-	submitBoss: (
-		token: string,
-		bossSlug: string,
-		payload: { answerText: string },
-	) =>
+
+	submitBoss: (bossSlug: string, payload: { answerText: string }) =>
 		request(`/boss/${bossSlug}/submit`, {
 			method: "POST",
 			body: payload,
-			token,
 		}),
 };

@@ -60,7 +60,6 @@ export default function Login() {
 			setStatus("CONNECTING...");
 			await login(email, password);
 			setStatus("SUCCESS");
-			setInterval(() => window.location.reload(), 200);
 		} catch (err) {
 			console.error(err);
 			setStatus("FAILED");
