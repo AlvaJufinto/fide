@@ -26,7 +26,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
 	const login = async (email: string, password: string) => {
 		const res = await api.login(email, password);
-		console.log("🚀 ~ login ~ res:", res);
 
 		if (!res.success) {
 			throw new Error(res.message);

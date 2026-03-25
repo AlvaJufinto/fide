@@ -11,7 +11,7 @@ const members = [
 	{
 		name: "Abraham Gregorius Anderson Thio",
 		image: Abraham,
-		role: "Backend Developer",
+		role: "Team Leader & Backend Developer",
 		description:
 			"Builds and maintains the server, database, and core logic of Fide.",
 	},
