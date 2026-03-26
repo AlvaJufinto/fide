@@ -100,7 +100,6 @@ export default function Lesson() {
 	const handleNext = async () => {
 		if (!lesson || !currentContent) return;
 
-		// move next
 		next();
 
 		if (!visited.current.has(currentContent.slug)) {
@@ -118,12 +117,8 @@ export default function Lesson() {
 	const updateLessonProgress = async () => {
 		if (!lesson) return;
 		const isLast = current === lesson.contents.length - 1;
-		console.log("🚀 ~ updateLessonProgress ~ current:", current);
-		console.log("🚀 ~ updateLessonProgress ~ isLast:", isLast);
 
 		if (currentContent) {
-			console.log("🚀 ~ MASUK PLEASE updateLessonProgress ~ isLast:", isLast);
-
 			await api.updateLessonProgress(lesson.slug, {
 				status: isLast ? "completed" : "in_progress",
 				lastContentSlug: currentContent.slug,

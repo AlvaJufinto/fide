@@ -176,7 +176,7 @@ function Chapter() {
 														<Button
 															to={`/chapter/${chapter.slug}/boss-fight`}
 															customClass="py-2 px-8 text-2xl"
-															disabled={lockedSection}
+															//disabled={lockedSection}
 														>
 															FIGHT
 														</Button>
@@ -250,7 +250,7 @@ function Chapter() {
 																	{currentLesson?.lesson.id === lesson.id && (
 																		<div className="absolute z-8 -right-40 flex items-center bg-primary text-white p-2 border-4 border-black font-bold animate-float-pixel">
 																			{/* Triangle arrow kiri */}
-																			<div className="absolute left-[-12px] z-8 top-1/2 -translate-y-1/2 w-0 h-0 border-t-8 border-b-8 border-r-8 border-t-transparent border-b-transparent border-r-black  bg"></div>
+																			<div className="absolute -left-3 z-8 top-1/2 -translate-y-1/2 w-0 h-0 border-t-8 border-b-8 border-r-8 border-t-transparent border-b-transparent border-r-black  bg"></div>
 																			Start Here
 																		</div>
 																	)}

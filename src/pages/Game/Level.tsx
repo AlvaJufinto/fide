@@ -117,7 +117,7 @@ function Level() {
 							<div
 								key={i}
 								className={`w-3 h-5 border-2 border-black ${
-									i < filledSegments ? "bg-primary" : "bg-white"
+									i < filledSegments ? "bg-yellow" : "bg-white"
 								}`}
 							/>
 						))}

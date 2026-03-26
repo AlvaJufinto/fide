@@ -1,10 +1,80 @@
 /** @format */
 
-import { useEffect, useRef, useState } from "react";
+import {
+	useEffect,
+	useRef,
+	useState,
+} from 'react';
 
-import type { ISection } from "@/interfaces/data";
-import type { ChatMessage } from "@/interfaces/debate";
+import type { ISection } from '@/interfaces/data';
+import type { ChatMessage } from '@/interfaces/debate';
 
+/** @format */
+
+type LLMJudgeResult = {
+	score: number;
+	feedback: string;
+};
+
+export async function judgeDebateAnswer(
+	question: string,
+	answer: string,
+): Promise<LLMJudgeResult> {
+	try {
+		const res = await fetch("https://ai.sumopod.com/v1/chat/completions", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${import.meta.env.VITE_LLM_KEY}`,
+			},
+			body: JSON.stringify({
+				model: "seed-2-0-mini-free",
+				messages: [
+					{
+						role: "system",
+						content: `You are a strict debate judge evaluating a student's answer.
+The debate question/point is: "${question}"
+The student answered: "${answer}"
+
+Respond ONLY in this exact JSON format (no markdown, no extra text):
+{"score": <integer 0-20>, "feedback": "<1-2 sentence feedback>"}
+
+Score 0-20 based on relevance, accuracy, and argumentation quality.`,
+					},
+					{ role: "user", content: answer },
+				],
+				max_tokens: 80,
+				temperature: 0.3,
+			}),
+		});
+
+		const data = await res.json();
+		const raw = data.choices?.[0]?.message?.content || "{}";
+
+		let parsedScore = 10;
+		let feedback = "Keep going!";
+
+		try {
+			const parsed = JSON.parse(raw);
+			parsedScore = Math.min(20, Math.max(0, parsed.score ?? 10));
+			feedback = parsed.feedback ?? feedback;
+		} catch {
+			// fallback kalau JSON rusak
+			feedback = raw;
+		}
+
+		return {
+			score: parsedScore,
+			feedback,
+		};
+	} catch (err) {
+		console.error("LLM error:", err);
+		return {
+			score: 0,
+			feedback: "The judge couldn't respond. Try again.",
+		};
+	}
+}
 export default function useDebateGame(bossSection: ISection | null) {
 	const maxQuestions = 5;
 	const currentIndexRef = useRef(0);
@@ -30,70 +100,39 @@ export default function useDebateGame(bossSection: ISection | null) {
 		const idx = currentIndexRef.current;
 		const currentQuestion = questions[idx];
 
+		// guard
 		if (!playerAnswer.trim() || !currentQuestion || isThinking) return;
 
 		const answer = playerAnswer;
+
+		// reset input + lock UI
 		setPlayerAnswer("");
 		setIsThinking(true);
 
-		// Append player message immediately
+		// langsung tampilkan jawaban user
 		setChatLog((prev) => [...prev, { from: "player", text: answer }]);
 
 		try {
-			const res = await fetch("https://ai.sumopod.com/v1/chat/completions", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-					Authorization: `Bearer ${import.meta.env.VITE_LLM_KEY}`,
-				},
-				body: JSON.stringify({
-					model: "seed-2-0-mini-free",
-					// FIX 1: Ask AI to score 0-20 AND give feedback, structured response
-					messages: [
-						{
-							role: "system",
-							content: `You are a strict debate judge evaluating a student's answer.
-The debate question/point is: "${currentQuestion}"
-The student answered: "${answer}"
+			const { score: parsedScore, feedback } = await judgeDebateAnswer(
+				currentQuestion,
+				answer,
+			);
 
-Respond ONLY in this exact JSON format (no markdown, no extra text):
-{"score": <integer 0-20>, "feedback": "<1-2 sentence feedback>"}
-
-Score 0-20 based on relevance, accuracy, and argumentation quality.`,
-						},
-						{ role: "user", content: answer },
-					],
-					max_tokens: 150,
-					temperature: 0.3,
-				}),
-			});
-
-			const data = await res.json();
-			const raw = data.choices?.[0]?.message?.content || "{}";
-
-			let parsedScore = 10;
-			let feedback = "Keep going!";
-			try {
-				const parsed = JSON.parse(raw);
-				parsedScore = Math.min(20, Math.max(0, parsed.score ?? 10));
-				feedback = parsed.feedback ?? feedback;
-			} catch {
-				// fallback if AI didn't follow format
-				feedback = raw;
-			}
-
-			// FIX 5: clamp total score to 100
+			// update score (max 100)
 			setScore((prev) => Math.min(prev + parsedScore, 100));
+
+			// tampilkan feedback
 			setChatLog((prev) => [
 				...prev,
 				{ from: "feedback", text: `⚖️ ${feedback} (+${parsedScore} pts)` },
 			]);
 
-			// FIX 2: use ref to get correct next index, no stale closure
+			// hitung next index (pakai ref biar ga stale)
 			const nextIndex = idx + 1;
 			currentIndexRef.current = nextIndex;
 			setCurrentIndex(nextIndex);
 
+			// delay biar feel natural
 			setTimeout(() => {
 				if (nextIndex < questions.length) {
 					setChatLog((prev) => [
@@ -108,16 +147,25 @@ Score 0-20 based on relevance, accuracy, and argumentation quality.`,
 							text: "The debate is over. You've made your case.",
 						},
 					]);
+
 					setFinished(true);
+
+					// api.updateLessonProgress(...)
 				}
+
 				setIsThinking(false);
 			}, 800);
 		} catch (err) {
 			console.error(err);
+
 			setChatLog((prev) => [
 				...prev,
-				{ from: "feedback", text: "The judge couldn't respond. Try again." },
+				{
+					from: "feedback",
+					text: "The judge couldn't respond. Try again.",
+				},
 			]);
+
 			setIsThinking(false);
 		}
 	};

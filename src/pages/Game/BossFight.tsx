@@ -1,20 +1,26 @@
 /** @format */
 
-import { useEffect, useState } from "react";
+import {
+	useEffect,
+	useState,
+} from 'react';
 
-import { useParams } from "react-router";
+import { useParams } from 'react-router';
 
-import { api } from "@/api";
-import Brother from "@/assets/game/brother.png";
-import Martin from "@/assets/game/stages/final-boss.png";
-import BgImg from "@/assets/game/stages/level-1.png";
-import ChatLog from "@/components/Debate/ChatLog";
-import LessonHeader from "@/components/Game/LessonHeader";
-import LoadingScreen from "@/components/Game/LoadingScreen";
-import Button from "@/components/ui/Button";
-import useDebateGame from "@/hooks/useDebateGame";
-import type { IChapter, ISection } from "@/interfaces/data";
-import type { Speaker } from "@/interfaces/debate";
+import { api } from '@/api';
+import Brother from '@/assets/game/brother.png';
+import Martin from '@/assets/game/stages/final-boss.png';
+import BgImg from '@/assets/game/stages/level-1.png';
+import ChatLog from '@/components/Debate/ChatLog';
+import LessonHeader from '@/components/Game/LessonHeader';
+import LoadingScreen from '@/components/Game/LoadingScreen';
+import Button from '@/components/ui/Button';
+import useDebateGame from '@/hooks/useDebateGame';
+import type {
+	IChapter,
+	ISection,
+} from '@/interfaces/data';
+import type { Speaker } from '@/interfaces/debate';
 
 function CharacterArea({
 	currentSpeaker,
@@ -47,7 +53,7 @@ function CharacterArea({
 				</span>
 			</div>
 
-			<div className="text-5xl self-center border-4 border-black bg-white p-4">
+			<div className="text-5xl self-center border-4 border-black bg-white p-4 shadow-custom">
 				{" "}
 				VS{" "}
 			</div>

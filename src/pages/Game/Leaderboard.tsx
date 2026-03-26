@@ -1,9 +1,9 @@
 /** @format */
 
-import { useMemo } from "react";
+import { useMemo } from 'react';
 
-import SacredHeart from "@/assets/icon/sacred-heart.png";
-import FrontGame from "@/components/layout/FrontGame";
+import SacredHeart from '@/assets/icon/sacred-heart.png';
+import FrontGame from '@/components/layout/FrontGame';
 
 const LEADERBOARD_DATA = [
 	{ rank: 1, name: "S*****s A**a", points: 2450 },

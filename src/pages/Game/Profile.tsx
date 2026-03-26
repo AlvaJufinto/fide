@@ -124,8 +124,8 @@ function Profile() {
 							{Array.from({ length: 20 }).map((_, i) => (
 								<div
 									key={i}
-									className={`w-3 h-4 border border-black ${
-										i < Math.round(progress / 5) ? "bg-black" : "bg-white"
+									className={`w-3 h-4 border-2 border-black ${
+										i < Math.round(progress / 5) ? "bg-yellow" : "bg-white"
 									}`}
 								/>
 							))}
