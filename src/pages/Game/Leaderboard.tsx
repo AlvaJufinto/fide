@@ -1,7 +1,11 @@
 /** @format */
 
-import { useMemo } from 'react';
+import {
+	useEffect,
+	useMemo,
+} from 'react';
 
+import { api } from '@/api';
 import SacredHeart from '@/assets/icon/sacred-heart.png';
 import FrontGame from '@/components/layout/FrontGame';
 
@@ -60,6 +64,12 @@ function Leaderboard() {
 		() => Math.max(...LEADERBOARD_DATA.map((p) => p.points)),
 		[],
 	);
+
+	useEffect(() => {
+		api.getLeaderboard().then((res) => {
+			console.log(res);
+		});
+	}, []);
 
 	return (
 		<FrontGame>

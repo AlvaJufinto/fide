@@ -8,9 +8,8 @@ import {
 import { useParams } from 'react-router';
 
 import { api } from '@/api';
-import Brother from '@/assets/game/brother.png';
-import Martin from '@/assets/game/stages/final-boss.png';
 import BgImg from '@/assets/game/stages/level-1.png';
+import CharacterArea from '@/components/Debate/CharacterArea';
 import ChatLog from '@/components/Debate/ChatLog';
 import LessonHeader from '@/components/Game/LessonHeader';
 import LoadingScreen from '@/components/Game/LoadingScreen';
@@ -22,85 +21,26 @@ import type {
 } from '@/interfaces/data';
 import type { Speaker } from '@/interfaces/debate';
 
-function CharacterArea({
-	currentSpeaker,
-	isThinking,
-}: {
-	currentSpeaker: Speaker;
-	isThinking: boolean;
-}) {
-	return (
-		<div className="flex justify-between items-end px-5">
-			{/* Player */}
-			<div
-				className={`relative flex flex-col items-center ${currentSpeaker === "player" ? "animate-float-pixel" : ""}`}
-			>
-				<img
-					src={Brother}
-					alt="Brother"
-					className={`h-48 object-contain transition-all duration-300 ${
-						currentSpeaker === "player" ? "scale-110 opacity-100" : "opacity-40"
-					}`}
-				/>
-				<span
-					className={`mt-1 text-xs px-2 py-1 font-bold ${
-						currentSpeaker === "player"
-							? "bg-blue-500 text-white"
-							: "bg-gray-300 text-gray-600"
-					}`}
-				>
-					{currentSpeaker === "player" && isThinking ? "Thinking..." : "You"}
-				</span>
-			</div>
-
-			<div className="text-5xl self-center border-4 border-black bg-white p-4 shadow-custom">
-				{" "}
-				VS{" "}
-			</div>
-
-			{/* Boss */}
-			<div
-				className={`relative flex flex-col items-center ${currentSpeaker === "boss" ? "animate-float-pixel" : ""}`}
-			>
-				<img
-					src={Martin}
-					alt="Martin"
-					className={`h-40 object-contain transition-all duration-300 ${
-						currentSpeaker === "boss" ? "scale-110 opacity-100" : "opacity-40"
-					}`}
-				/>
-				<span
-					className={`mt-1 text-xs px-2 py-1 font-bold ${
-						currentSpeaker === "boss"
-							? "bg-red-500 text-white"
-							: "bg-gray-300 text-gray-600"
-					}`}
-				>
-					{currentSpeaker === "boss" && isThinking
-						? "Thinking..."
-						: "Martin Luther"}
-				</span>
-			</div>
-		</div>
-	);
-}
-
 export default function BossFight() {
 	const { chapterSlug } = useParams();
+
 	const [chapter, setChapter] = useState<IChapter | null>(null);
 	const [section, setSection] = useState<ISection | null>(null);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
 		if (!chapterSlug) return;
+
 		api
 			.getChapterFull(chapterSlug)
 			.then((res) => {
 				if (res.success && res.data) {
 					setChapter(res.data);
+
 					const bossSection = res.data.sections.find(
 						(s: ISection) => s.isFinalBoss && s.boss,
 					);
+
 					setSection(bossSection || null);
 				}
 			})
@@ -112,7 +52,6 @@ export default function BossFight() {
 	if (loading) return <LoadingScreen />;
 	if (!chapter || !section) return <div>Chapter or Boss not found</div>;
 
-	// FIX speaker: boss is active while AI is thinking/responding
 	const currentSpeaker: Speaker = game.finished
 		? "player"
 		: game.isThinking
@@ -121,7 +60,7 @@ export default function BossFight() {
 
 	return (
 		<div className="relative w-full h-screen flex flex-col overflow-hidden">
-			{/* Background */}
+			{/* BG */}
 			<div
 				className="absolute inset-0 bg-cover bg-center"
 				style={{ backgroundImage: `url(${BgImg})` }}
@@ -129,29 +68,30 @@ export default function BossFight() {
 				<div className="absolute inset-0 bg-black/60" />
 			</div>
 
-			{/* Content — full height flex column */}
 			<div className="relative z-10 flex flex-col h-full max-w-3xl mx-auto w-full px-4">
-				{/* Header */}
-				<div className="bg-white border-black border-4 p-4 shadow-custom mt-4 shrink-0">
-					<Button to={`/chapter/${chapter.slug}`} customClass="py-2 px-8">
+				{/* HEADER */}
+				<div className="bg-white border-4 border-black p-4 shadow-custom mt-4">
+					<Button customClass="py-2 px-4" to={`/chapter/${chapter.slug}`}>
 						{"<"} Back
 					</Button>
+
 					<div className="w-full h-2 mt-4 bg-black" />
+
 					<LessonHeader chapter={chapter} section={section} />
 				</div>
 
-				{/* Characters */}
-				<div className="shrink-0 mt-3">
+				{/* CHARACTERS */}
+				<div className="mt-3">
 					<CharacterArea
 						currentSpeaker={currentSpeaker}
 						isThinking={game.isThinking}
 					/>
 				</div>
 
-				{/* FIX 4: Chat area grows to fill remaining space, scrolls internally */}
+				{/* CHAT BOX */}
 				<div className="flex-1 min-h-0 bg-white/90 border-4 border-black mt-3 flex flex-col overflow-hidden">
-					{/* Progress bar */}
-					<div className="shrink-0 flex items-center justify-between px-4 py-2 border-b-2 border-black bg-gray-100 text-xs font-bold">
+					{/* TOP BAR */}
+					<div className="flex justify-between px-4 py-2 border-b-2 border-black bg-gray-100 text-xs font-bold">
 						<span>
 							Question {Math.min(game.currentIndex + 1, game.maxQuestions)} /{" "}
 							{game.maxQuestions}
@@ -159,13 +99,13 @@ export default function BossFight() {
 						<span>Score: {game.score} / 100</span>
 					</div>
 
-					{/* Scrollable messages */}
-					<div className="flex-1 min-h-0 overflow-y-auto">
+					{/* CHAT */}
+					<div className="flex-1 overflow-y-auto">
 						<ChatLog messages={game.chatLog} />
 					</div>
 
-					{/* FIX 5: Input pinned at bottom, inside the chat box */}
-					<div className="shrink-0 border-t-4 border-black p-3 bg-white">
+					{/* INPUT / RESULT */}
+					<div className="border-t-4 border-black p-3 bg-white">
 						{!game.finished ? (
 							<form
 								onSubmit={(e) => {
@@ -179,32 +119,59 @@ export default function BossFight() {
 									value={game.playerAnswer}
 									onChange={(e) => game.setPlayerAnswer(e.target.value)}
 									disabled={game.isThinking}
-									className="flex-1 border-2 border-black px-3 py-2 text-sm disabled:opacity-50"
+									className="flex-1 border-2 border-black px-3 py-2 text-sm"
 									placeholder={
 										game.isThinking
-											? "Waiting for judge..."
+											? "Waiting judge..."
 											: "Type your argument..."
 									}
 								/>
+
 								<Button
 									type="submit"
 									disabled={game.isThinking || !game.playerAnswer.trim()}
-									customClass="border-2 border-black px-5 py-2 font-bold bg-black text-white disabled:opacity-40 hover:bg-gray-800 transition-colors"
+									customClass="border-2 border-black px-5 py-2 bg-black text-white"
 								>
 									Submit
 								</Button>
 							</form>
 						) : (
-							<div className="p-3 border-4 border-green-500 bg-green-100 text-center">
-								<p className="font-bold text-lg">Debate Complete!</p>
-								<p className="text-2xl font-black mt-1">{game.score} / 100</p>
+							<div className="relative">
+								{/* WIN */}
+								{game.result === "win" && (
+									<div className="p-4 border-4 border-green-500 bg-green-100 text-center animate-bounce-in">
+										<p className="text-2xl font-black text-green-700">
+											VICTORY
+										</p>
+										<p className="text-lg mt-1">{game.score} / 100</p>
+
+										<div className="mt-2 animate-confetti text-2xl">
+											🎉 🎉 🎉
+										</div>
+									</div>
+								)}
+
+								{/* LOSE */}
+								{game.result === "lose" && (
+									<div className="p-4 border-4 border-red-500 bg-red-100 text-center animate-shake">
+										<p className="text-2xl font-black text-red-700">DEFEAT</p>
+										<p className="text-sm">Score too low. Try again.</p>
+										<p className="text-lg mt-1">{game.score} / 100</p>
+
+										<Button
+											onClick={game.resetGame}
+											customClass="mt-3 border-2 border-black px-4 py-1 bg-black text-white"
+										>
+											Retry
+										</Button>
+									</div>
+								)}
 							</div>
 						)}
 					</div>
 				</div>
 
-				{/* Bottom padding */}
-				<div className="shrink-0 h-4" />
+				<div className="h-4" />
 			</div>
 		</div>
 	);

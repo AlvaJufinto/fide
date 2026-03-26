@@ -116,10 +116,9 @@ function Profile() {
 					<div className="w-full border-2 border-black p-3 flex flex-col gap-2">
 						<div className="flex justify-between text-sm font-bold">
 							<span>Grace Points (XP)</span>
-							<span>{points}</span>
+							<span className="text-yellow-500 text-2xl">{points}</span>
 						</div>
 
-						{/* PROGRESS BAR (SEGMENT STYLE BIAR CONSISTENT) */}
 						<div className="flex gap-1">
 							{Array.from({ length: 20 }).map((_, i) => (
 								<div
@@ -134,7 +133,7 @@ function Profile() {
 						<div className="text-xs text-right">{Math.floor(progress)}%</div>
 
 						{nextRank && (
-							<div className="text-xs border-2 border-black px-2 py-1 text-center">
+							<div className="text-xs border-2 border-black bg-primary text-white px-2 py-1 text-center">
 								NEXT: {nextRank.rank} ({nextRank.requiredPoints} XP)
 							</div>
 						)}

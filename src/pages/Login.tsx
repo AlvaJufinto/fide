@@ -1,12 +1,15 @@
 /** @format */
 
-import { useEffect, useState } from "react";
+import {
+	useEffect,
+	useState,
+} from 'react';
 
-import { useNavigate } from "react-router";
+import { useNavigate } from 'react-router';
 
-import Button from "@/components/ui/Button";
-import { useAuth } from "@/context/useAuth";
-import useTyping from "@/hooks/useTyping";
+import Button from '@/components/ui/Button';
+import { useAuth } from '@/context/useAuth';
+import useTyping from '@/hooks/useTyping';
 
 function Input({
 	label,
@@ -100,14 +103,14 @@ export default function Login() {
 				</div>
 
 				<p className="text-xs opacity-70">
-					FIDE v1.0 • Faith Interactive Development Engine
+					FIDE v1.0 • Faith Interactive Edutainment
 				</p>
 			</div>
 
 			<div className="flex items-center justify-center p-6 bg-[#f9f9f9]">
 				<div className="w-full max-w-md border-5 border-black bg-white p-6 shadow-[6px_6px_0px_black] space-y-5 relative">
 					<div className="absolute -top-3 left-4 bg-yellow-400 border-2 border-black px-2 text-xs font-bold">
-						AUTH PANEL
+						LOGIN PANEL
 					</div>
 
 					<Button
@@ -154,9 +157,9 @@ export default function Login() {
 					</form>
 
 					<div
-						className={`border-3 p-3 text-sm font-bold text-center transition-all ${getStatusStyle()}`}
+						className={`border-3 border-dashed p-3 text-sm font-bold text-center transition-all ${getStatusStyle()}`}
 					>
-						{statusText}
+						STATUS: {statusText}
 					</div>
 				</div>
 			</div>

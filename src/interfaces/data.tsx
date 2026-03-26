@@ -56,6 +56,7 @@ export interface IChoice {
 }
 
 export interface IBoss {
+	id: number;
 	type: "debate";
 	slug: string;
 	title: string;

@@ -176,7 +176,7 @@ function Chapter() {
 														<Button
 															to={`/chapter/${chapter.slug}/boss-fight`}
 															customClass="py-2 px-8 text-2xl"
-															//disabled={lockedSection}
+															disabled={lockedSection}
 														>
 															FIGHT
 														</Button>

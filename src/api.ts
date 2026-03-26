@@ -127,6 +127,10 @@ export const api = {
 
 	getProfile: () => request("/profile"),
 
+	getStreaks: () => request("/streaks"),
+
+	getLeaderboard: () => request("/leaderboard"),
+
 	// ===================== CONTENT =====================
 	getChapters: () => request("/chapters"),
 	getChapter: (slug: string) => request(`/chapters/${slug}`),
@@ -183,5 +187,14 @@ export const api = {
 		request(`/boss/${bossSlug}/submit`, {
 			method: "POST",
 			body: payload,
+		}),
+
+	completeBoss: (payload: { slug: string; isCompleted?: boolean }) =>
+		request("/complete-boss", {
+			method: "POST",
+			body: {
+				slug: payload.slug,
+				isCompleted: true,
+			},
 		}),
 };

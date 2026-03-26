@@ -1,11 +1,18 @@
 /** @format */
 
-import { useEffect, useRef } from "react";
+import {
+	useEffect,
+	useRef,
+} from 'react';
 
-import type { ChatMessage } from "@/interfaces/debate";
+import useTyping from '@/hooks/useTyping';
+import type { ChatMessage } from '@/interfaces/debate';
 
 export default function ChatLog({ messages }: { messages: ChatMessage[] }) {
 	const bottomRef = useRef<HTMLDivElement>(null);
+
+	const lastMessage = messages[messages.length - 1];
+	const typedLastText = useTyping(lastMessage?.text || "", 20);
 
 	// Auto-scroll to latest message
 	useEffect(() => {
@@ -16,6 +23,9 @@ export default function ChatLog({ messages }: { messages: ChatMessage[] }) {
 		// FIX 4: fixed-height scrollable chat area, no overflow outside container
 		<div className="flex flex-col gap-3 overflow-y-auto h-full px-4 py-3">
 			{messages.map((msg, i) => {
+				const isLast = i === messages.length - 1;
+				const displayText = isLast ? typedLastText : msg.text;
+
 				if (msg.from === "boss") {
 					return (
 						<div key={i} className="flex items-start gap-2 max-w-[80%]">
@@ -23,7 +33,7 @@ export default function ChatLog({ messages }: { messages: ChatMessage[] }) {
 								<span className="font-bold text-red-700 block text-xs mb-1">
 									Martin Luther
 								</span>
-								{msg.text}
+								{displayText}
 							</div>
 						</div>
 					);
@@ -38,7 +48,7 @@ export default function ChatLog({ messages }: { messages: ChatMessage[] }) {
 								<span className="font-bold text-blue-700 block text-xs mb-1 text-right">
 									You
 								</span>
-								{msg.text}
+								{displayText}
 							</div>
 						</div>
 					);
@@ -52,7 +62,7 @@ export default function ChatLog({ messages }: { messages: ChatMessage[] }) {
 						<span className="font-bold text-yellow-700 block text-xs mb-1">
 							Judge's Feedback
 						</span>
-						{msg.text}
+						{displayText}
 					</div>
 				);
 			})}

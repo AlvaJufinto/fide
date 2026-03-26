@@ -3,6 +3,7 @@
 @import "./styles/markdown.css";
 @import "./styles/typography.css";
 @import "./styles/layout.css";
+@import "./styles/boss.css";
 
 :root {
 	--color-white: #ffffff;
